@@ -18,7 +18,7 @@
     </header>
     <main>
         <div class="content">
-            <h1>Hello, Tenant!</h1>
+            <h1>Hi Tenant!</h1>
             <p class="welcome-text">Welcome to DormHub, your trusted platform for managing bills and payments. We're here to ensure your billing experience is smooth and hassle-free.</p>
            <a href = "UserLogin.php">
             <button class="sign-in">Get Started</button>
