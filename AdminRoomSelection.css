@@ -74,3 +74,7 @@ body {
 	font-weight: 100;
 	margin: 5px 0;
 }
+
+.room-content button:hover {
+	background-color: rgb(46, 46, 46);
+}
