@@ -19,7 +19,7 @@ header {
 	justify-content: space-between;
 	align-items: center;
 	padding: 10px 2vw;
-	background-color: rgb(24, 25, 26);
+	background-color: rgb(39, 40, 41);
 	box-sizing: border-box;
 	height: 70px;
 }
@@ -84,16 +84,30 @@ main {
 	font-size: 4vw;
 	font-weight: 600;
 	margin-bottom: 2vw;
+	margin-left: 30px;
 }
 
 .welcome-text {
 	font-size: 2vw;
 	font-weight: 400;
 	margin-bottom: 3vw;
+	margin-left: 30px;
 }
 
 .inside-container {
 	text-align: center;
+	margin-left: 30px;
+}
+
+.inside-container p {
+	width: 100%;
+	max-width: 300px;
+	background-color: #fff;
+	background: rgb(249, 64, 64);
+	margin-bottom: 10px;
+	padding: 5px;
+	border-radius: 3px;
+	
 }
 
 .login-form {
@@ -108,9 +122,13 @@ main {
 .form-group input {
 	width: 100%;
 	padding: 10px;
-	border: 1px solid #ccc;
+	border: 1px solid rgb(187, 249, 64);
 	border-radius: 4px;
 	font-size: 14px;
+}
+input[type="checkbox"] {
+	display: inline-block;
+	width: auto;
 }
 
 .form-group button {
@@ -145,6 +163,7 @@ main {
 	justify-content: center;
 	align-items: center;
 	width: 100%;
+	margin-right: -200px;
 }
 
 .image-container img {
@@ -186,14 +205,13 @@ main {
 		width: 80%;
 		max-width: 250px;
 	}
-
-	.form-group input,
-	.form-group button {
-		font-size: 4vw;
-		padding: 8px;
-	}
-
 	.form-group button {
 		padding: 12px;
 	}
+	
 }
+	.form-group button {
+		font-size: 15px;
+		padding: 8px;
+		text-align: center;
+	}
