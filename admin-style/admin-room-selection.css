@@ -11,7 +11,7 @@ body {
 	justify-content: center;
 	align-items: center;
 	min-height: 100vh;
-	padding: 20px; /* Add padding to prevent content from touching edges */
+	padding: 20px;
 }
 
 .container {
@@ -27,12 +27,13 @@ body {
 	grid-template-columns: repeat(
 		auto-fill,
 		minmax(200px, 1fr)
-	); /* Responsive grid columns */
-	gap: 20px; /* Gap between grid items */
-	padding: 20px; /* Padding inside the container */
+	); 
+	gap: 20px; 
+	padding: 20px;
 	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 	border-radius: 8px;
 	text-align: center;
+	flex-direction: column;
 }
 
 .room-container {
@@ -125,4 +126,130 @@ body {
 		height: 35px;
 		font-size: 7px;
 	}
+}
+
+.popup {
+	display: none; 
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.4); 
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.popup{
+	display: none;
+}
+
+.popup-content {
+	background-color: #fefefe;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 50%;
+	max-width: 600px; 
+	overflow-y: auto;
+	text-align: center;
+	border-radius: 8px;
+}
+
+.close {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+	color: black;
+	text-decoration: none;
+}
+
+.form-group {
+	margin-bottom: 15px;
+	text-align: left;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="tel"],
+.form-group select,
+.form-group textarea {
+	width: 100%;
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+
+.name-group {
+	display: flex;
+	gap: 10px;
+}
+
+.name-group .form-group {
+	flex: 1;
+}
+
+hr {
+	margin-top: 19px;
+	margin-bottom: 10px;
+}
+
+button {
+	width: 100%;
+	padding: 10px;
+	border: none;
+	border-radius: 15px;
+	background-color: rgb(170, 254, 2);
+	color: rgb(24, 25, 26);
+	font-size: 16px;
+	cursor: pointer;
+	font-weight: 500;
+}
+
+button:hover {
+	background-color: rgb(187, 249, 64);
+}
+.buttons{
+	background-color: rgb(39, 40, 41);
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 16px;
+}
+.buttons button {
+	width: 80px;
+	height: 50px;
+	margin: 5px 5px;
+	border-radius: 2px;
+} 
+
+.error{
+	align-content: center;
+	width: 100%;
+}
+.error p {
+	width: 100%;
+	background-color: #fff;
+	background: rgb(249, 64, 64);
+	margin-bottom: 10px;
+	padding: 5px;
+	border-radius: 3px;
+	color: #ffffff;
+}				
+
+.dd  {
+	text-align: left;
+	padding-left: 20px;
 }
