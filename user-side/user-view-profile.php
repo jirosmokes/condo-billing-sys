@@ -1,12 +1,11 @@
 <?php
 session_start();
-require_once '../connection-db.php';
+require '../connection-db.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['account_number'])) {
-/*    header('Location: ../user-side/user-dashboard.php');
+    header('Location: ../user-side/user-dashboard.php');
     exit;
-    */
 }
 
 // Fetch user data based on account_number
@@ -25,7 +24,61 @@ if ($result->num_rows > 0) {
 }
 
 $stmt->close();
+
+// Handle image upload
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profilePicture'])) {
+    $uploadMessage = upload_image($account_number, $conn);
+    echo "<script>alert('$uploadMessage');</script>";
+    header("Refresh:0"); // Refresh the page to show the updated image
+}
+
 $conn->close();
+
+function upload_image($account_number, $conn) {
+    if (isset($_FILES["profilePicture"]) && $_FILES["profilePicture"]["error"] == 0) {
+        $image = $_FILES["profilePicture"];
+        $target_dir = "../images/";
+        $target_file = $target_dir . basename($image["name"]);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+        
+        $check = getimagesize($image["tmp_name"]);
+        if ($check === false) {
+            return "File is not an image.";
+        }
+
+        if ($image["size"] > 500000) {
+            return "Sorry, your file is too large.";
+        }
+
+        $allowedFormats = ["jpg", "jpeg", "png", "gif"];
+        if (!in_array($imageFileType, $allowedFormats)) {
+            return "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        }
+
+        if (file_exists($target_file)) {
+            return "Sorry, file already exists.";
+        }
+
+        if (move_uploaded_file($image["tmp_name"], $target_file)) {
+            $imagePath = "images/" . basename($image["name"]);
+            $sql = "UPDATE users SET image = ? WHERE account_number = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ss", $imagePath, $account_number);
+            if ($stmt->execute()) {
+                $stmt->close();
+                return "The file " . htmlspecialchars(basename($image["name"])) . " has been uploaded.";
+            } else {
+                $stmt->close();
+                return "Sorry, there was an error updating your profile.";
+            }
+        } else {
+            return "Sorry, there was an error uploading your file.";
+        }
+    } else {
+        return "No file was uploaded or there was an upload error.";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -40,7 +93,7 @@ $conn->close();
 <body>
     <div class="card">
         <div class="header">
-            <div class="profile-pic" id="profile-pic" style="background-image: url('<?php echo isset($user['image']) ? $user['image'] : ''; ?>');">
+            <div class="profile-pic" id="profile-pic" style="background-image: url('../<?php echo isset($user['image']) ? $user['image'] : ''; ?>');">
                 <label for="file-upload" class="upload-label">Upload</label>
                 <input type="file" id="file-upload" name="profilePicture" accept="image/*" onchange="document.getElementById('upload-form').submit();">
             </div>
@@ -72,14 +125,12 @@ $conn->close();
                 </thead>
                 <tbody>
                     <?php
-                        // Sample data array
                         $billing_logs = [
-                            ['2024-07-01', '$100', 'Paid', '2024-07-02'],
-                            ['2024-07-15', '$150', 'Unpaid', ''],
-                            ['2024-08-01', '$200', 'Paid', '2024-08-02'],
+                            ['N/A', 'N/A', 'N/A', 'N/A'],
+                            ['N/A', 'N/A', 'N/A', 'N/A'],
+                            ['N/A', 'N/A', 'N/A', 'N/A']
                         ];
 
-                        // Display data in table rows
                         foreach ($billing_logs as $log) {
                             echo '<tr>';
                             foreach ($log as $item) {
