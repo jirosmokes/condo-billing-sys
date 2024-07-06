@@ -49,4 +49,3 @@
             "room_capacity" => 4
         )
     );
-?>
