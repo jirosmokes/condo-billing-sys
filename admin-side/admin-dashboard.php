@@ -143,7 +143,6 @@ if (isset($_POST['logout'])) {
             <i class="fa-solid fa-money-bills"></i>
             <span>Revenue</span>
         </a>
-
         <a href="../admin-side/admin-about-team.php" onclick="showContent('view-about')>
             <i class="far fa-question-circle"></i>
             <span>About</span>
