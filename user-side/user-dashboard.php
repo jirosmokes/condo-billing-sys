@@ -22,7 +22,7 @@
             <span>Dashboard</span>
         </a>
 
-        <a href="#" onclick="showContent('profile')">
+        <a href="../user-side/user-view-profile.php " onclick="showContent('profile')">
             <i class="fas fa-user-alt"></i>
             <span>Profile</span>
         </a>

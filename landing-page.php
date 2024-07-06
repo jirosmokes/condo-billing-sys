@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         if ($account) {
             // Verify the password
             if ($password == $account["account_password"]) {
-                $_SESSION['name'] = $account['name'];
+                $_SESSION['account_number'] = $account['account_number'];
 
                 if (isset($_POST['rememberme'])) {
                     setcookie('account-number', $accountNumber, time() + (86400 * 30), "/");
