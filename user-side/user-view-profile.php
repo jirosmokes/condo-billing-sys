@@ -1,49 +1,41 @@
 <?php
-include '../connection-db.php';
+session_start();
+require_once '../connection-db.php';
 
-// Fetch user data
-$user_id = 1; // Assuming you are fetching data for user with id 1
-$sql = "SELECT * FROM users WHERE id = $user_id";
-$result = $conn->query($sql);
-$user = $result->fetch_assoc();
-/*
-// Handle profile picture upload
-if (isset($_POST['upload'])) {
-    $target_dir = "uploads/";
-    $target_file = $target_dir . basename($_FILES["profilePicture"]["name"]);
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
- // Check if image file is an actual image or fake image
-    $check = getimagesize($_FILES["profilePicture"]["tmp_name"]);
-    if ($check !== false) {
-        if (move_uploaded_file($_FILES["profilePicture"]["tmp_name"], $target_file)) {
-            $sql = "UPDATE users SET image='$target_file' WHERE id=$user_id";
-            if ($conn->query($sql) === TRUE) {
-                echo "<script>
-                    document.getElementById('profile-pic').style.backgroundImage = 'url(" . $target_file . ")';
-                    alert('The file " . htmlspecialchars(basename($_FILES["profilePicture"]["name"])) . " has been uploaded.');
-                </script>";
-            } else {
-                echo "<script>alert('Error updating record: " . $conn->error . "');</script>";
-            }
-        } else {
-            echo "<script>alert('Sorry, there was an error uploading your file.');</script>";
-        }
-    } else {
-        echo "<script>alert('File is not an image.');</script>";
-    }
+// Check if user is logged in
+if (!isset($_SESSION['account_number'])) {
+/*    header('Location: ../user-side/user-dashboard.php');
+    exit;
+    */
 }
-*/
+
+// Fetch user data based on account_number
+$account_number = $_SESSION['account_number'];
+$sql = "SELECT * FROM users WHERE account_number = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $account_number);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $user = $result->fetch_assoc();
+} else {
+    echo "User not found!";
+    exit;
+}
+
+$stmt->close();
 $conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../user-style/user-view-profile.css">
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
     <title>Contact Card</title>
-  
 </head>
 <body>
     <div class="card">
@@ -82,7 +74,9 @@ $conn->close();
                     <?php
                         // Sample data array
                         $billing_logs = [
-                           
+                            ['2024-07-01', '$100', 'Paid', '2024-07-02'],
+                            ['2024-07-15', '$150', 'Unpaid', ''],
+                            ['2024-08-01', '$200', 'Paid', '2024-08-02'],
                         ];
 
                         // Display data in table rows
