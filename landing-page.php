@@ -16,41 +16,44 @@ if (isset($_COOKIE['password'])) {
 
 $password_confirm = false;
 $error = "";
-if(isset($_POST['submit'])) {
-    $accountNumber = $_POST['account-number'];
-    $password = $_POST['password'];
+if ($_SERVER["REQUEST_METHOD"] == "POST"){
+    if(isset($_POST['submit'])) {
+        $accountNumber = $_POST['account-number'];
+        $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT * FROM user_accounts WHERE account_number = ?");
-    $stmt->bind_param("s", $accountNumber);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $account = $result->fetch_assoc();
-    
-    if ($account) {
-        // Verify the password
-        if ($password == $account["password"]) {
-            $_SESSION['name'] = $account['name'];
+        $stmt = $conn->prepare("SELECT * FROM users WHERE account_number = ?");
+        $stmt->bind_param("s", $accountNumber);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $account = $result->fetch_assoc();
+        
+        if ($account) {
+            // Verify the password
+            if ($password == $account["account_password"]) {
+                $_SESSION['name'] = $account['name'];
 
-            if (isset($_POST['rememberme'])) {
-                setcookie('account-number', $accountNumber, time() + (86400 * 30), "/");
-                setcookie('password', $password, time() + (86400 * 30), "/");
+                if (isset($_POST['rememberme'])) {
+                    setcookie('account-number', $accountNumber, time() + (86400 * 30), "/");
+                    setcookie('password', $password, time() + (86400 * 30), "/");
+                } else {
+                    setcookie('account-number', '', time() - 3600, "/");
+                    setcookie('password', '', time() - 3600, "/");
+                }
+                header("Location: user-side/user-dashboard.php");
+                exit();
             } else {
-                setcookie('account-number', '', time() - 3600, "/");
-                setcookie('password', '', time() - 3600, "/");
+                $error = "Wrong password";
+                $password_confirm = true;
             }
-            header("Location: user-side/user-dashboard.php");
-            exit();
         } else {
-            $error = "Wrong password";
+            $error = "User not registered";
             $password_confirm = true;
         }
-    } else {
-        $error = "User not registered";
-        $password_confirm = true;
-    }
 
-    $stmt->close();
+        $stmt->close();
+    }
 }
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -61,6 +64,7 @@ if(isset($_POST['submit'])) {
     <title>Welcome to DormHub</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="landing-page.css?v=<?php echo time(); ?>">
+    <link rel="icon" href="images/dorm-hub-logo-official-2.png" type="image/png">
 </head>
 <body>
     <header>
@@ -90,9 +94,6 @@ if(isset($_POST['submit'])) {
                     </div>
                     <div class="form-group">
                         <button type="submit" name="submit">Login</button>
-                    </div>
-                    <div class="forgot">
-                        <a href="#">Forgot Password?</a>
                     </div>
                     <div class="form-group">
                         <input type="checkbox" name="rememberme" id="rememberme">

@@ -39,6 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/dorm-hub-logo-official-2.png" type="image/png">
     <title>Login</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:600|Open+Sans:600&display=swap">
     <style>
