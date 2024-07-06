@@ -1,127 +1,167 @@
+<?php
+// Start session if it's not already started
+session_start();
+
+// Check if session variable for admin login is not set, redirect to login page
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    #header("Location: admin-landing.php");
+    #exit();
+}
+
+// Logout logic
+if (isset($_POST['logout'])) {
+    // Unset all session variables
+    session_unset();
+    
+    // Destroy the session
+    session_destroy();
+    
+    // Redirect to landing page after logout
+    header("Location: ../landing-page.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <link rel="icon" href="images/dorm-hub-logo-official-2.png" type="image/png">
+    <title>DH-Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../admin-style/admin-sidebar.css?v=<?php echo time(); ?>">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-        }
+        /* Sidebar styles */
         .sidebar {
-            width: 250px;
-            background-color: #333;
-            color: #fff;
-            padding: 20px;
-            height: 100vh;
             position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: linear-gradient(145deg, #1e1e1e, #2c2c2c);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
-        .main-content {
-            margin-left: 300px;
-            padding: 20px;
+
+        .sidebar header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 70px;
+            background: #222;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
         }
-        .header {
-            background-color: #4CAF50;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-            border-radius: 5px 5px 0 0;
-            margin-bottom: 20px;
-        }
-        .content {
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            border-radius: 5px;
-        }
-        .table-container {
-            margin-top: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table th, table td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-        table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-        table td {
-            background-color: #fff;
-        }
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .sidebar li {
-            margin-bottom: 10px;
-        }
+
         .sidebar a {
-            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 15px 30px;
+            color: white;
             text-decoration: none;
-            display: block;
-            padding: 10px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s, transform 0.3s;
         }
+
         .sidebar a:hover {
-            background-color: #555;
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .sidebar a.active {
+            background-color: #575757;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+        }
+
+        .sidebar form {
+            margin-top: auto; /* Push the form to the bottom */
+        }
+
+        .sidebar form button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: block;
+            font-family: "Open Sans", sans-serif;
+            font-size: 16px;
+            line-height: 65px;
+            padding-left: 30px;
+            text-align: left;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .sidebar form button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar form button i {
+            margin-right: 10px;
+        }
+
+        .sidebar form button span {
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Content styles */
+        #content {
+            margin-left: 250px;
+            padding: 20px;
+            color: white;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Open Sans", sans-serif;
+            background-color: #1e1e1e;
         }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2>Admin Menu</h2>
-        <ul>
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Tenants</a></li>
-            <li><a href="#">Payments</a></li>
-            <li><a href="#">Reports</a></li>
-            <li><a href="#">Settings</a></li>
-        </ul>
+        <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
+
+        <a href="#" class="active" onclick="showContent('dashboard')">
+            <i class="fas fa-qrcode"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="../admin-side/admin-room-selection.php" onclick="showContent('view-tenants')">
+            <i class="fas fa-user-alt"></i>
+            <span>View Tenants</span>
+        </a>
+
+        <a href="#" onclick="showContent('view-revenue')">
+            <i class="fa-solid fa-money-bills"></i>
+            <span>Revenue</span>
+        </a>
+
+        <a href="#">
+            <i class="far fa-question-circle"></i>
+            <span>About</span>
+        </a>
+
+        <form method="post" action="">
+            <button type="submit" name="logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </form>
     </div>
-    <div class="main-content">
-        <div class="header">
-            <h1>Admin Dashboard</h1>
-        </div>
-        <div class="content">
-            <h2>Registered Tenants</h2>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Tenant Name</th>
-                            <th>Bill Amount</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>John Doe</td>
-                            <td>$250.00</td>
-                            <td>Paid</td>
-                        </tr>
-                        <tr>
-                            <td>Jane Smith</td>
-                            <td>$150.00</td>
-                            <td>Pending</td>
-                        </tr>
-                        <tr>
-                            <td>Michael Johnson</td>
-                            <td>$300.00</td>
-                            <td>Unpaid</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+
+    <div id="content">
+        <!-- Content will be loaded here -->
+
     </div>
+
+
 </body>
 </html>
