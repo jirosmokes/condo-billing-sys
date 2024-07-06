@@ -1,6 +1,38 @@
+<?php
+require '../connection-db.php'; // Include the database connection script
+
+// Check if all required fields are present in $_POST
+if(isset($_POST['cardNumber'], $_POST['expiry'], $_POST['cvc'], $_POST['country'], $_POST['amount'])) {
+    // Get form data
+    $cardNumber = $_POST['cardNumber'];
+    $expiry = $_POST['expiry'];
+    $cvc = $_POST['cvc'];
+    $country = $_POST['country'];
+    $amount = $_POST['amount'];
+    $transactionId = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10);
+
+    // SQL to insert data into table
+    $sql = "INSERT INTO payments (card_number, expiry, cvc, country, amount, transaction_id)
+            VALUES ('$cardNumber', '$expiry', '$cvc', '$country', '$amount', '$transactionId')";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "Payment recorded successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+} else {
+    echo "Error: Required fields are missing or empty";
+}
+
+$conn->close();
+?>
+
+
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../admin-style/admin-sidebar.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Payment Form</title>
     <style>
       body {
@@ -111,86 +143,92 @@
             margin: 5px 0;
         }
         .sidebar {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 250px;
-	height: 100%;
-	background: linear-gradient(145deg, #1e1e1e, #2c2c2c);
-	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-	transition: all 0.3s;
-	overflow: hidden;
-	display: flex;
-	flex-direction: column;
-}
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: linear-gradient(145deg, #1e1e1e, #2c2c2c);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
-.sidebar header {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	height: 70px;
-	background: #222;
-	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-}
+        .sidebar header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 70px;
+            background: #222;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
 
-.sidebar a {
-	display: flex;
-	align-items: center;
-	padding: 15px 30px;
-	color: white;
-	text-decoration: none;
-	transition: background-color 0.3s, transform 0.3s;
-}
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 15px 30px;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.3s;
+        }
 
-.sidebar a:hover {
-	background-color: rgba(255, 255, 255, 0.1);
-	transform: translateX(5px);
-}
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
 
-.sidebar a.active {
-	background-color: #575757;
-}
+        .sidebar a.active {
+            background-color: #575757;
+        }
 
-.sidebar a i {
-	margin-right: 10px;
-}
+        .sidebar a i {
+            margin-right: 10px;
+        }
 
-.sidebar form {
-	margin-top: auto; /* Push the form to the bottom */
-}
+        .sidebar form {
+            margin-top: auto; /* Push the form to the bottom */
+        }
 
-.sidebar form button {
-	background: none;
-	border: none;
-	color: white;
-	cursor: pointer;
-	display: block;
-	font-family: "Open Sans", sans-serif;
-	font-size: 16px;
-	line-height: 65px;
-	padding-left: 30px;
-	text-align: left;
-	transition: all 0.3s ease;
-	width: 100%;
-	box-sizing: border-box;
-}
+        .sidebar form button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: block;
+            font-family: "Open Sans", sans-serif;
+            font-size: 16px;
+            line-height: 65px;
+            padding-left: 30px;
+            text-align: left;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
 
-.sidebar form button:hover {
-	background-color: rgba(255, 255, 255, 0.1);
-}
+        .sidebar form button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
 
-.sidebar form button i {
-	margin-right: 10px;
-}
+        .sidebar form button i {
+            margin-right: 10px;
+        }
 
-.sidebar form button span {
-	letter-spacing: 1px;
-	text-transform: uppercase;
-}
+        .sidebar form button span {
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .amount input{
+            width: 95%;
+        }
+        .expiry input, .cvc input{
+            width: 100px;
+        }
     </style>
 </head>
 <body>
-<div class="sidebar">
+    <div class="sidebar">
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
         <a href="../user-side/user-billing-information.php" class="active" onclick="showContent('dashboard')">

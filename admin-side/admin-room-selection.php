@@ -35,7 +35,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../admin-style/admin-sidebar.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../admin-style/admin-room-selection.css?v=<?php echo time(); ?>">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Room Selection</title>
     <link rel="icon" type="image/png" href="logo.png">
@@ -138,10 +137,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <!-- SIDEBAR -->
-<div class="sidebar">
+    <div class="sidebar">
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
-        <a href="../admin-side/admin-dashboard.php" class="active" onclick="showContent('dashboard')">
+        <a href="../admin-side/admin-dashbaord" class="active" onclick="showContent('dashboard')">
             <i class="fas fa-qrcode"></i>
             <span>Dashboard</span>
         </a>
@@ -161,16 +160,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <span>About</span>
         </a>
 
-        <form method="post" action="">
+        <form method="post" action="../logout.php">
             <button type="submit" name="logout">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </button>
         </form>
     </div>
-<!-- SIDEBAR -->
-
-
+    <!-- SIDEBAR -->
     <form method="post">
         <div class="buttons">
             <button type="submit" name="add"><i class="fa-solid fa-user-plus"></i></button>

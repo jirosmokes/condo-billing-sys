@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         if ($account) {
             // Verify the password
             if ($password == $account["account_password"]) {
-                $_SESSION['name'] = $account['name'];
+                $_SESSION['account_number'] = $account['account_number'];
 
                 if (isset($_POST['rememberme'])) {
                     setcookie('account-number', $accountNumber, time() + (86400 * 30), "/");
@@ -39,8 +39,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                     setcookie('account-number', '', time() - 3600, "/");
                     setcookie('password', '', time() - 3600, "/");
                 }
-                header("Location: user-side/user-dashboard.php");
-                exit();
+                if($account['access_lvl'] == "user") {
+                    header("Location: user-side/user-dashboard.php");
+                    exit();
+                } else {
+                    header("Location: admin-side/admin-dashboard.php");
+                    exit();
+                }
             } else {
                 $error = "Wrong password";
                 $password_confirm = true;
@@ -71,7 +76,7 @@ $conn->close();
         <img src="images/dorm-hub-logo-official.png" alt="DormHub Logo" class="logo">
         <nav>
             <a href="#">About</a>
-            <a href="admin-side/admin-landing.php">Admin</a>
+            <a href="rooms.php">Rooms</a>
         </nav>
         <button class="help-center">Help Center</button>
     </header>
