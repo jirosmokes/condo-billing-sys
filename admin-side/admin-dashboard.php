@@ -4,8 +4,8 @@ session_start();
 
 // Check if session variable for admin login is not set, redirect to login page
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header("Location: admin-landing.php");
-    exit();
+    #header("Location: admin-landing.php");
+    #exit();
 }
 
 // Logout logic
@@ -17,7 +17,7 @@ if (isset($_POST['logout'])) {
     session_destroy();
     
     // Redirect to landing page after logout
-    header("Location: admin-landing.php");
+    header("Location: ../landing-page.php");
     exit();
 }
 ?>
@@ -30,7 +30,7 @@ if (isset($_POST['logout'])) {
     <link rel="icon" href="images/dorm-hub-logo-official-2.png" type="image/png">
     <title>DH-Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="../user-style/user-sidebar.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../admin-style/admin-sidebar.css?v=<?php echo time(); ?>">
     <style>
         /* Sidebar styles */
         .sidebar {
@@ -134,7 +134,7 @@ if (isset($_POST['logout'])) {
             <span>Dashboard</span>
         </a>
 
-        <a href="#" onclick="showContent('view-tenants')">
+        <a href="../admin-side/admin-room-selection.php" onclick="showContent('view-tenants')">
             <i class="fas fa-user-alt"></i>
             <span>View Tenants</span>
         </a>
@@ -159,25 +159,9 @@ if (isset($_POST['logout'])) {
 
     <div id="content">
         <!-- Content will be loaded here -->
+
     </div>
 
-    <script>
-        function showContent(section) {
-            var contentArea = document.getElementById("content");
 
-            if (section === 'dashboard') {
-                contentArea.innerHTML = `<h2>Dashboard</h2>`;
-            } else if (section === 'view-tenants') {
-                contentArea.innerHTML = `<?php include '../admin-side/admin-room-selection.php'?>`;
-            } else if (section === 'view-revenue') {
-                contentArea.innerHTML = `<h2>Revenue</h2>`;
-            }
-        }
-
-        // Load dashboard content by default
-        document.addEventListener("DOMContentLoaded", function() {
-            showContent('dashboard');
-        });
-    </script>
 </body>
 </html>
