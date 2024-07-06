@@ -32,7 +32,52 @@ if (isset($_POST['logout'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../user-style/user-sidebar.css?v=<?php echo time(); ?>">
     <style>
-        /* Additional styles to ensure logout button looks like other sidebar links */
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: linear-gradient(145deg, #1e1e1e, #2c2c2c);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 70px;
+            background: #222;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 15px 30px;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .sidebar a.active {
+            background-color: #575757;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+        }
+
         .sidebar form {
             margin-top: auto; /* Push the form to the bottom */
         }
@@ -65,15 +110,22 @@ if (isset($_POST['logout'])) {
             letter-spacing: 1px;
             text-transform: uppercase;
         }
+
+        /* Content styles */
+        #content {
+            margin-left: 250px;
+            padding: 20px;
+            color: white;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Open Sans", sans-serif;
+            background-color: #1e1e1e;
+        }
     </style>
 </head>
-<body style="background-color: #1e1e1e;">
-    <input type="checkbox" id="check">
-    <label for="check">
-        <i class="fas fa-bars" id="btn"></i>
-        <i class="fas fa-times" id="cancel"></i>
-    </label>
-
+<body>
     <div class="sidebar">
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
@@ -97,7 +149,7 @@ if (isset($_POST['logout'])) {
             <span>About</span>
         </a>
 
-        <form method="post" action="" style="margin-top: auto;">
+        <form method="post" action="">
             <button type="submit" name="logout">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
@@ -121,6 +173,11 @@ if (isset($_POST['logout'])) {
                 contentArea.innerHTML = `<h2>Revenue</h2>`;
             }
         }
+
+        // Load dashboard content by default
+        document.addEventListener("DOMContentLoaded", function() {
+            showContent('dashboard');
+        });
     </script>
 </body>
 </html>
