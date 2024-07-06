@@ -159,7 +159,7 @@ if (isset($_POST['logout'])) {
 
     <div id="content">
         <!-- Content will be loaded here -->
-
+        <?php include 'admin-dbContent.php'; ?>
     </div>
 
 
