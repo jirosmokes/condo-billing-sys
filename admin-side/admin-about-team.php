@@ -143,6 +143,7 @@ if (isset($_POST['logout'])) {
             <i class="fa-solid fa-money-bills"></i>
             <span>Revenue</span>
         </a>
+
         <a href="../admin-side/admin-about-team.php" onclick="showContent('view-about')>
             <i class="far fa-question-circle"></i>
             <span>About</span>
@@ -156,10 +157,29 @@ if (isset($_POST['logout'])) {
         </form>
     </div>
 
-    <div id="content">
-        <?php include 'admin-dbContent.php'; ?>
-    </div>
+    <div id="content" style="display: flex; justify-content: center; align-items: center; height: 80vh;">
+    <?php
+    // Sample team members data
+    $teamMembers = [
+        ['name' => 'Bangal, Exequiel', 'course' => 'BSCSSE'],
+        ['name' => 'Lappay, Dennis', 'course' => 'BSCSSE'],
+        ['name' => 'Tinio, Jabenn', 'course' => 'BSCSSE'],
+        ['name' => 'Wania, Dustin', 'course' => 'BSCSSE']
+    ];
+    ?>
+
+    <section id="aboutTeam" style="text-align: center;">
+        <h2>Our Team</h2><br>
+        <ul style="list-style-type: none; padding: 0;">
+            <?php foreach ($teamMembers as $member): ?>
+                <li style="margin-bottom: 10px;"><?php echo $member['name']; ?> - <?php echo $member['course']; ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </section>
+</div>
+
 
 
 </body>
 </html>
+
