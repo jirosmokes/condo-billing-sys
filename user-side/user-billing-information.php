@@ -118,7 +118,7 @@
         <form id="paymentForm">
             <div class="card-number">
                 <label for="cardNumber">Card number</label>
-                <input type="text" id="cardNumber" name="cardNumber" value="xxxx xxxx xxxx xxxx">
+                <input type="text" id="cardNumber" name="cardNumber" placeholder="xxxx xxxx xxxx xxxx">
                 <div class="card-logo">
                     <img src="../images/visa.jpg" alt="Visa Logo">
                 </div>
@@ -130,7 +130,7 @@
                 </div>
                 <div class="cvc">
                     <label for="cvc">CVC</label>
-                    <input type="text" id="cvc" name="cvc" value="xxx">
+                    <input type="text" id="cvc" name="cvc" placeholder="1234">
                 </div>
                 <div class="country">
                     <label for="country">Country</label>
@@ -141,7 +141,7 @@
             </div>
             <div class="amount">
                 <label for="amount">Amount to Pay:</label>
-                <input type="number" id="amount" name="amount" min="1" value="10000">
+                <input type="number" id="amount" name="amount" placeholder="₱">
             </div>
             <button class="pay-button" type="submit">Pay</button>
             <button type="button" class="cancel-button">Cancel</button> 
