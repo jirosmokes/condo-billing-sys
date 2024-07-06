@@ -27,7 +27,7 @@
             <span>Profile</span>
         </a>
 
-        <a href="#" onclick="showContent('bills')">
+        <a href="../user-side/user-billing-information.php" onclick="showContent('bills')">
           <i class="fa-solid fa-money-bills"></i>
             <span>Bills</span>
         </a>

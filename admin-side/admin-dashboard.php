@@ -144,7 +144,7 @@ if (isset($_POST['logout'])) {
             <span>Revenue</span>
         </a>
 
-        <a href="#">
+        <a href="../user-side/user-billing-information.php">
             <i class="far fa-question-circle"></i>
             <span>About</span>
         </a>
