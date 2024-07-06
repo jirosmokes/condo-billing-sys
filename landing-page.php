@@ -95,9 +95,6 @@ $conn->close();
                     <div class="form-group">
                         <button type="submit" name="submit">Login</button>
                     </div>
-                    <div class="forgot">
-                        <a href="#">Forgot Password?</a>
-                    </div>
                     <div class="form-group">
                         <input type="checkbox" name="rememberme" id="rememberme">
                         <label for="rememberme">Remember Me</label>

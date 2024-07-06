@@ -1,5 +1,4 @@
 <?php
-define('DB_SERVER', 'localhost');
 $servername = "localhost";
 $username = "root";
 $password = "";
