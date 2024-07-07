@@ -149,12 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <i class="fas fa-user-alt"></i>
             <span>View Tenants</span>
         </a>
-
-        <a href="#" onclick="showContent('view-revenue')">
-            <i class="fa-solid fa-money-bills"></i>
-            <span>Revenue</span>
-        </a>
-        <form method="post" action="../logout.php">
+        <form method="post" action="">
             <button type="submit" name="logout">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>

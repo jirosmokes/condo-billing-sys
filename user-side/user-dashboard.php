@@ -109,12 +109,12 @@
             <span>Dashboard</span>
         </a>
 
-        <a href="#">
+        <a href="../user-side/user-view-profile.php " onclick="showContent('profile')">
             <i class="fas fa-user-alt"></i>
             <span>Profile</span>
         </a>
 
-        <a href="#">
+        <a href="../user-side/user-billing-information.php" onclick="showContent('bills')">
           <i class="fa-solid fa-money-bills"></i>
             <span>Bills</span>
         </a>

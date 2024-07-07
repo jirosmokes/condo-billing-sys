@@ -127,12 +127,8 @@ if (!isset($_SESSION['account_number'])) {
             <span>View Tenants</span>
         </a>
 
-        <a href="#" onclick="showContent('view-revenue')">
-            <i class="fa-solid fa-money-bills"></i>
-            <span>Revenue</span>
-        </a>
         <form method="post" action="../logout.php">
-            <button type="submit" name="logout" action="../logout.php">
+            <button type="submit" name="logout">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </button>
@@ -140,8 +136,7 @@ if (!isset($_SESSION['account_number'])) {
     </div>
 
     <div id="content">
-        <!-- Content will be loaded here -->
-
+        <?php include 'admin-dbContent.php'; ?>
     </div>
 </body>
 </html>
