@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../user-style/user-sidebar.css?v=<?php echo time(); ?>">
     <link rel="icon" href="images/dorm-hub-logo-official-2.png" type="image/png">
     <style>
-        /* Sidebar styles */
+       
         .sidebar {
             position: fixed;
             top: 0;
@@ -54,7 +54,7 @@
         }
 
         .sidebar form {
-            margin-top: auto; /* Push the form to the bottom */
+            margin-top: auto; 
         }
 
         .sidebar form button {
@@ -86,7 +86,7 @@
             text-transform: uppercase;
         }
 
-        /* Content styles */
+      
         #content {
             margin-left: 250px;
             padding: 20px;
@@ -104,10 +104,7 @@
     <div class="sidebar">
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
-        <!--a href="#" class="active">
-            <i class="fas fa-qrcode"></i>
-            <span>Dashboard</span>
-        </a-->
+       
 
         <a href="../user-side/user-view-profile.php " onclick="showContent('profile')">
             <i class="fas fa-user-alt"></i>
@@ -127,7 +124,7 @@
     </div>
 
     <div id="content">
-        <!-- Content will be loaded here -->
+      
     </div>
 </body>
 </html>
