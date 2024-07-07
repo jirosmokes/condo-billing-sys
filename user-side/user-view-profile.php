@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profilePicture'])) {
     $uploadMessage = upload_image($account_number, $conn);
     echo "<script>alert('$uploadMessage');</script>";
     header("Refresh:0"); // Refresh the page to show the updated image
+    exit; // Ensure script stops after refresh
 }
 
 $conn->close();
@@ -42,24 +43,29 @@ function upload_image($account_number, $conn) {
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
         
+        // Check if file is an actual image
         $check = getimagesize($image["tmp_name"]);
         if ($check === false) {
             return "File is not an image.";
         }
 
+        // Check file size
         if ($image["size"] > 500000) {
             return "Sorry, your file is too large.";
         }
 
+        // Allow certain file formats
         $allowedFormats = ["jpg", "jpeg", "png", "gif"];
         if (!in_array($imageFileType, $allowedFormats)) {
             return "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
         }
 
+        // Check if file already exists
         if (file_exists($target_file)) {
             return "Sorry, file already exists.";
         }
 
+        // Attempt to move the uploaded file
         if (move_uploaded_file($image["tmp_name"], $target_file)) {
             $imagePath = "images/" . basename($image["name"]);
             $sql = "UPDATE users SET image = ? WHERE account_number = ?";
@@ -93,13 +99,12 @@ function upload_image($account_number, $conn) {
 <body>
     <div class="card">
         <div class="header">
-            <div class="profile-pic" id="profile-pic" style="background-image: url('../<?php echo isset($user['image']) ? $user['image'] : ''; ?>');">
-                <label for="file-upload" class="upload-label">Upload</label>
-                <input type="file" id="file-upload" name="profilePicture" accept="image/*" onchange="document.getElementById('upload-form').submit();">
+            <div class="profile-pic" id="profile-pic" style="background-image: url('../<?php echo isset($user['image']) ? htmlspecialchars($user['image']) : ''; ?>');">
+                <form id="upload-form" action="" method="post" enctype="multipart/form-data">
+                    <label for="file-upload" class="upload-label">Upload</label>
+                    <input type="file" id="file-upload" name="profilePicture" accept="image/*" onchange="document.getElementById('upload-form').submit();">
+                </form>
             </div>
-            <form id="upload-form" action="" method="post" enctype="multipart/form-data" style="display:none;">
-                <input type="submit" name="upload" value="Upload">
-            </form>
             <div class="info">
                 <h2><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></h2>
                 <div class="left">
@@ -118,13 +123,14 @@ function upload_image($account_number, $conn) {
                 <thead>
                     <tr>
                         <th>Due Date</th>
-                        <th>Price</th>
-                        <th>State</th>
+                        <th>Amount</th>
+                        <th>Status</th>
                         <th>Date Paid</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
+                        // Assuming $billing_logs fetched from database
                         $billing_logs = [
                             ['N/A', 'N/A', 'N/A', 'N/A'],
                             ['N/A', 'N/A', 'N/A', 'N/A'],
