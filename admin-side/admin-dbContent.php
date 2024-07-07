@@ -32,6 +32,18 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Fetch total number of registered tenants
+$sql = "SELECT COUNT(*) AS total_tenants FROM users";
+$result = $conn->query($sql);
+
+$totalTenants = 0;
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $totalTenants = $row['total_tenants'];
+}
+$sql_details = "SELECT account_number, last_name, room_number FROM users";
+$result_details = $conn->query($sql_details);
+
 // Fetch billing logs with selected columns
 $sql = "SELECT payer_name, card_number, expiry, amount, transaction_id, transaction_date FROM billing_information";
 $result = $conn->query($sql);
@@ -178,17 +190,6 @@ $result = $conn->query($sql);
             <i class="fas fa-user-alt"></i>
             <span>View Tenants</span>
         </a>
-
-        <a href="#">
-            <i class="fa-solid fa-money-bills"></i>
-            <span>Revenue</span>
-        </a>
-
-        <a href="../admin-side/admin-about-team.php">
-            <i class="far fa-question-circle"></i>
-            <span>About</span>
-        </a>
-
         <form method="post" action="../logout.php">
             <button type="submit" name="logout">
                 <i class="fas fa-sign-out-alt"></i>
@@ -199,15 +200,44 @@ $result = $conn->query($sql);
 
     <div id="content">
         <!-- Total Tenants Section -->
-        <section id="totalTenants" style="display: inline-block; width: 300px; padding: 15px; border-radius: 10px; background-color: #333; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);">
+        <section id="totalTenants" style="display: inline-block; width: 100%; padding: 15px; border-radius: 10px; background-color: #333; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);">
             <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Total Registered Tenants</h2>
-            <p style="color: #ccc; font-size: 14px; line-height: 1.4; margin: 0;">Total:</p>
+            <p style="color: #ccc; font-size: 14px; line-height: 1.4; margin: 0;"><?php echo "Total: " . $totalTenants; ?></p>
+
+                <!-- Tenant Details Table -->
+            <section id="tenantDetails" style="margin-top: 20px;">
+                <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Tenant Details</h2>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="color: white; border-bottom: 1px solid #444; padding: 8px;">Account Number</th>
+                            <th style="color: white; border-bottom: 1px solid #444; padding: 8px;">Last Name</th>
+                            <th style="color: white; border-bottom: 1px solid #444; padding: 8px;">Room Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        if ($result_details->num_rows > 0) {
+                            while ($row_details = $result_details->fetch_assoc()) {
+                                echo "<tr>";
+                                echo "<td style='color: #ccc; padding: 8px;'>{$row_details['account_number']}</td>";
+                                echo "<td style='color: #ccc; padding: 8px;'>{$row_details['last_name']}</td>";
+                                echo "<td style='color: #ccc; padding: 8px;'>{$row_details['room_number']}</td>";
+                                echo "</tr>";
+                            }
+                        } else {
+                            echo "<tr><td colspan='3' style='color: #ccc; padding: 8px; text-align: center;'>No tenant details found.</td></tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </section>
         </section>
 
         <!-- Total Revenue Section -->
-        <section id="totalRevenue" style="display: inline-block; width: 800px; padding: 15px; border-radius: 10px; background-color: #333; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); margin-top: 20px;">
+        <section id="totalRevenue" style="display: inline-block; width: 100%;padding: 15px; border-radius: 10px; background-color: #333; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); margin-top: 20px;">
             <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Total Revenue</h2>
-            <p style="color: #ccc; font-size: 14px; line-height: 1.4; margin: 0;">Total Revenue: Pesos</p> <!-- Display total revenue -->
+            <p style="color: #ccc; font-size: 14px; line-height: 1.4; margin: 0;">Total Revenue: Pesos</p> <!-- Display total revenue --> 
 
             <!-- Canvas for Chart.js -->
             <canvas id="revenueChart" style="margin-top: 10px; max-height: 200px;"></canvas>
