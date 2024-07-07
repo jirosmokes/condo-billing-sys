@@ -41,7 +41,7 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $totalTenants = $row['total_tenants'];
 }
-$sql_details = "SELECT account_number, last_name, room_number FROM users";
+$sql_details = "SELECT account_number, last_name, room_number FROM users WHERE access_lvl != 'admin'";
 $result_details = $conn->query($sql_details);
 
 // Fetch billing logs with selected columns

@@ -20,13 +20,14 @@ if (isset($_POST["submit-add"])) {
             $firstname = $_POST["firstname"];
             $middlename = $_POST["middlename"];
             $lastname = $_POST["lastname"];
-            $password = $_POST["password"]; 
+            $password = $_POST["password"];
             $school = $_POST['school'];
             $contactnumber = $_POST["contact_number"];
             $emergencynumber = $_POST["emergency_number"];
+            $access_lvl = "user"; // Set access level to user
 
-            $stmt = $conn->prepare("INSERT INTO users (account_number, account_password, first_name, middle_name, last_name, school, contact_number, emergency_number, room_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssssss", $account_number, $password, $firstname, $middlename, $lastname,$school, $contactnumber, $emergencynumber, $room_number);
+            $stmt = $conn->prepare("INSERT INTO users (account_number, account_password, first_name, middle_name, last_name, school, contact_number, emergency_number, room_number, access_lvl) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssssssss", $account_number, $password, $firstname, $middlename, $lastname, $school, $contactnumber, $emergencynumber, $room_number, $access_lvl);
 
             if ($stmt->execute()) {
                 $new_user_validation = true;
@@ -75,7 +76,7 @@ if (isset($_POST["submit-add"])) {
                     <input type="text" id="firstname" name="firstname" placeholder="First Name" required autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <input type="text" id="middlename" name="middlename" placeholder="Middle Name"  autocomplete="off">
+                    <input type="text" id="middlename" name="middlename" placeholder="Middle Name" autocomplete="off">
                 </div>
                 <div class="form-group">
                     <input type="text" id="lastname" name="lastname" placeholder="Last Name" required autocomplete="off">
