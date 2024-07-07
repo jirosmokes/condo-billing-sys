@@ -149,7 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <i class="fas fa-user-alt"></i>
             <span>View Tenants</span>
         </a>
-        <form method="post" action="">
+        <form method="post" action="../logout.php   ">
             <button type="submit" name="logout">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>

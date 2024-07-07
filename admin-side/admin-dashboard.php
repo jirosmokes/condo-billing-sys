@@ -117,7 +117,7 @@ if (!isset($_SESSION['account_number'])) {
     <div class="sidebar">
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
-        <a href="#" class="active" onclick="showContent('dashboard')">
+        <a href="../admin-side/admin-dbcontent.php" class="active" onclick="showContent('dashboard')">
             <i class="fas fa-qrcode"></i>
             <span>Dashboard</span>
         </a>
