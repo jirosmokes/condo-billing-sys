@@ -94,7 +94,7 @@ function upload_image($account_number, $conn) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../user-style/user-view-profile.css">
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-    <title>Contact Card</title>
+    <title>Profile View</title>
 </head>
 <body>
     <div class="card">
@@ -106,14 +106,15 @@ function upload_image($account_number, $conn) {
                 </form>
             </div>
             <div class="info">
-                <h2><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></h2>
+                <h2><?php echo htmlspecialchars(strtoupper($user['first_name'] . ' ' . $user['last_name'])); ?></h2>
                 <div class="left">
                     <div>Email: <?php echo htmlspecialchars($user['account_number']); ?></div>
                     <div>Contact No.: <?php echo htmlspecialchars($user['contact_number']); ?></div>
-                </div>
-                <div class="right">
+                <!--/div>
+                <div class="right"-->
                     <div>School: <?php echo htmlspecialchars($user['school']); ?></div>
                     <div>Room No.: <?php echo htmlspecialchars($user['room_number']); ?></div>
+                    <div>Emergency No.: <?php echo htmlspecialchars($user['emergency_number']); ?></div>
                 </div>
             </div>
         </div>
@@ -132,6 +133,12 @@ function upload_image($account_number, $conn) {
                     <?php
                         // Assuming $billing_logs fetched from database
                         $billing_logs = [
+                            ['N/A', 'N/A', 'N/A', 'N/A'],
+                            ['N/A', 'N/A', 'N/A', 'N/A'],
+                            ['N/A', 'N/A', 'N/A', 'N/A'],
+                            ['N/A', 'N/A', 'N/A', 'N/A'],
+                            ['N/A', 'N/A', 'N/A', 'N/A'],
+                            ['N/A', 'N/A', 'N/A', 'N/A'],
                             ['N/A', 'N/A', 'N/A', 'N/A'],
                             ['N/A', 'N/A', 'N/A', 'N/A'],
                             ['N/A', 'N/A', 'N/A', 'N/A']

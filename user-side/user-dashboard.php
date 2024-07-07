@@ -104,10 +104,10 @@
     <div class="sidebar">
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
-        <a href="#" class="active">
+        <!--a href="#" class="active">
             <i class="fas fa-qrcode"></i>
             <span>Dashboard</span>
-        </a>
+        </a-->
 
         <a href="../user-side/user-view-profile.php " onclick="showContent('profile')">
             <i class="fas fa-user-alt"></i>
