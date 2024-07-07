@@ -38,55 +38,52 @@ if (isset($_POST['submit'])) {
     $country = mysqli_real_escape_string($conn, $_POST['country']);
     $amount_paid = mysqli_real_escape_string($conn, $_POST['amount']);
 
-    // Check if the selected bill ID is the next sequential bill to be paid
-    $previous_bill_id = getPreviousPaidBillId($transactions, $bill_id, $selected_room_number);
-    if ($previous_bill_id === null || $previous_bill_id === '') {
-        $error = "You must pay the previous bill before paying this one.";
-    } else {
-        // Check if the room number matches the current session room number
-        if (isset($transactions[$bill_id])) {
-            $transaction = $transactions[$bill_id];
-            if ($transaction['room_number'] != $selected_room_number) {
-                $error = "You cannot pay bills for a different room.";
-            } else {
-                // Retrieve amount from array for validation
-                $amount_in_db = $transaction['amount'];
+    // Check if the room number matches the current session room number
+    if (isset($transactions[$bill_id])) {
+        $transaction = $transactions[$bill_id];
+        if ($transaction['room_number'] != $selected_room_number) {
+            $error = "You cannot pay bills for a different room.";
+        } else {
+            // Retrieve amount from array for validation
+            $amount_in_db = $transaction['amount'];
 
-                // Validate if the paid amount matches the amount in database
-                if ($amount_paid == $amount_in_db) {
-                    // Update transaction status to "paid" and amount to 0
-                    $update_query = "UPDATE transactions SET status = 'paid', amount = 0 WHERE id = '$bill_id'";
-                    if (mysqli_query($conn, $update_query)) {
-                        // Success message
-                        $message = "Payment successful! Transaction ID: $bill_id";
+            // Validate if the paid amount matches the amount in database
+            if ($amount_paid == $amount_in_db) {
+                // Update transaction status to "paid" and amount to 0
+                $update_query = "UPDATE transactions SET status = 'paid', amount = 0 WHERE id = '$bill_id'";
+                if (mysqli_query($conn, $update_query)) {
+                    // Success message
+                    $message = "Payment successful! Transaction ID: $bill_id";
 
-                        // Update the local transaction array to reflect the status change
-                        $transactions[$bill_id]['status'] = 'paid';
-                        $transactions[$bill_id]['amount'] = 0;
+                    // Update the local transaction array to reflect the status change
+                    $transactions[$bill_id]['status'] = 'paid';
+                    $transactions[$bill_id]['amount'] = 0;
 
-                        // Proceed to the next bill in sequence
-                        $next_bill_id = getNextUnpaidBillId($transactions, $bill_id, $selected_room_number);
-                        if ($next_bill_id !== null) {
-                            $update_next_query = "UPDATE transactions SET status = 'unpaid' WHERE id = '$next_bill_id'";
-                            if (mysqli_query($conn, $update_next_query)) {
-                                $transactions[$next_bill_id]['status'] = 'unpaid';
-                                $message .= "<br>Next bill (ID: $next_bill_id) is now ready for payment.";
-                            } else {
-                                $error = "Failed to update next bill status. Please try again.";
-                            }
+                    // Optionally, proceed to the next bill in sequence
+                    // This can be added if needed in the future
+                    /*
+                    $next_bill_id = getNextUnpaidBillId($transactions, $bill_id, $selected_room_number);
+                    if ($next_bill_id !== null) {
+                        $update_next_query = "UPDATE transactions SET status = 'unpaid' WHERE id = '$next_bill_id'";
+                        if (mysqli_query($conn, $update_next_query)) {
+                            $transactions[$next_bill_id]['status'] = 'unpaid';
+                            $message .= "<br>Next bill (ID: $next_bill_id) is now ready for payment.";
                         } else {
-                            $message .= "<br>No more unpaid bills for this room.";
+                            $error = "Failed to update next bill status. Please try again.";
                         }
                     } else {
-                        $error = "Failed to update transaction status. Please try again.";
+                        $message .= "<br>No more unpaid bills for this room.";
                     }
+                    */
                 } else {
-                    $error = "Paid amount does not match the amount in database. Please verify and try again.";
+                    $error = "Failed to update transaction status. Please try again.";
                 }
+            } else {
+                $error = "Paid amount does not match the amount in database. Please verify and try again.";
             }
-        } else {
-            $error = "Bill not found or does not belong to this room.";
         }
+    } else {
+        $error = "Bill not found or does not belong to this room.";
     }
 }
 
@@ -106,27 +103,26 @@ function getNextUnpaidBillId($transactions, $current_bill_id, $room_number) {
     return null;
 }
 
-// Function to get the ID of the previously paid bill from array
 function getPreviousPaidBillId($transactions, $current_bill_id, $room_number) {
-    $previous_bill_id = '';
+    $previous_bill_id = null;
     $found_current = false;
     foreach ($transactions as $id => $transaction) {
         if ($transaction['room_number'] == $room_number) {
-            if ($found_current) {
-                return $id;
-            }
             if ($id == $current_bill_id) {
-                $found_current = true;
+                return $previous_bill_id;
+            }
+            if ($transaction['status'] == 'paid') {
+                $previous_bill_id = $id;
             }
         }
     }
     return $previous_bill_id;
 }
 
+
 // Close connection (assuming your current code structure)
 $conn->close();
 ?>
-
 
 
 <!DOCTYPE html>
@@ -315,6 +311,18 @@ $conn->close();
 </style>
 </head>
 <body>
+<?php if (!empty($message) || !empty($error)): ?>
+    <div class="container">
+        <?php if (!empty($message)): ?>
+            <p class="message"><?php echo $message; ?></p>
+        <?php endif; ?>
+        <?php if (!empty($error)): ?>
+            <p class="error"><?php echo $error; ?></p>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
+
 <?php if (!empty($transactions)): ?>
     <?php foreach ($transactions as $transaction): ?>
         <div class="container">
