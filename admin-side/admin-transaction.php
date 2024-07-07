@@ -11,13 +11,16 @@ while ($row = mysqli_fetch_assoc($rooms_result)) {
 $errors = [];
 
 // Handle form submission
+// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(isset($_POST['submit'])) {
         // Validate and sanitize inputs
         $room_number = mysqli_real_escape_string($conn, $_POST['roomnumber']);
         $amount = mysqli_real_escape_string($conn, $_POST['amount']);
         $description = mysqli_real_escape_string($conn, $_POST['description']);
-        $status = mysqli_real_escape_string($conn, $_POST['status'] = "pending"); // Ensure status is set in the form
+        $startdate = ($_POST['startdate'] != '') ? mysqli_real_escape_string($conn, $_POST['startdate']) : '1970-01-01';
+        $duedate = ($_POST['duedate'] != '') ? mysqli_real_escape_string($conn, $_POST['duedate']) : '1970-01-01';
+        $status = "pending"; // Default to pending if not set
 
         // Basic validation
         if (empty($room_number)) {
@@ -38,8 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // If no validation errors, proceed with insertion
         if (empty($errors)) {
             // Insert into transactions table
-            $insert_query = "INSERT INTO transactions (room_number, amount, description, status) 
-                            VALUES ('$room_number', '$amount', '$description', '$status')";
+            $insert_query = "INSERT INTO transactions (room_number, amount, description, start_date, due_date, status) 
+                            VALUES ('$room_number', '$amount', '$description', '$startdate', '$duedate', '$status')";
             
             if (mysqli_query($conn, $insert_query)) {
                 // Redirect to the same page to prevent form resubmission
@@ -55,6 +58,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+
+
 
 // Fetch transaction details for a specific room number if selected
 $transactions = [];
@@ -109,7 +114,7 @@ if (isset($_GET['room_number'])) {
             margin-bottom: 5px;
         }
 
-        input[type="text"], textarea, select {
+        input[type="text"],input[type="date"], textarea, select {
             width: 100%;
             padding: 10px;
             border: 1px solid #5f6368;
@@ -177,6 +182,14 @@ if (isset($_GET['room_number'])) {
             <div class="form-group">
                 <label for="amount">Amount:</label>
                 <input type="text" id="amount" name="amount" required><br>
+            </div>
+            <div class="form-group">
+                <label for="startdate">Starting Date:</label>
+                <input type="date" id="startdate" name="startdate" required><br>
+            </div>
+            <div class="form-group">
+                <label for="duedate">Due Date:</label>
+                <input type="date" id="duedate" name="duedate" required><br>
             </div>
             <div class="form-group">
                 <label for="description">Description:</label>
