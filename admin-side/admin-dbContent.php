@@ -1,24 +1,4 @@
 <?php
-// Start session if it's not already started
-// Check if session variable for admin login is not set, redirect to login page
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    #header("Location: admin-landing.php");
-    #exit();
-}
-
-// Logout logic
-if (isset($_POST['logout'])) {
-    // Unset all session variables
-    session_unset();
-    
-    // Destroy the session
-    session_destroy();
-    
-    // Redirect to landing page after logout
-    header("Location: ../landing-page.php");
-    exit();
-}
-
 // Database connection (replace with your actual connection details)
 $servername = "localhost";
 $username = "root";
@@ -41,14 +21,33 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $totalTenants = $row['total_tenants'];
 }
+
+// Fetch tenant details excluding admin
 $sql_details = "SELECT account_number, last_name, room_number FROM users WHERE access_lvl != 'admin'";
 $result_details = $conn->query($sql_details);
 
-// Fetch billing logs with selected columns
-$sql = "SELECT payer_name, card_number, expiry, amount, transaction_id, transaction_date FROM billing_information";
-$result = $conn->query($sql);
+// Fetch total revenue per month for Chart.js
+$sqlRevenue = "
+    SELECT SUM(amount) AS total_amount, MONTH(start_date) AS transaction_month
+    FROM transactions 
+    WHERE status = 'paid'
+    GROUP BY MONTH(start_date)
+    ORDER BY MONTH(start_date)
+";
 
+$resultRevenue = $conn->query($sqlRevenue);
+
+// Fetch detailed paid transactions for the table
+$sqlPaidTransactions = "
+    SELECT room_number, amount, description, status, transaction_date
+    FROM transactions 
+    WHERE status = 'paid'
+    ORDER BY transaction_date DESC
+";
+
+$resultPaidTransactions = $conn->query($sqlPaidTransactions);
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -140,7 +139,7 @@ $result = $conn->query($sql);
 
         /* Content styles */
         #content {
-            margin-left: 200px;
+            margin-left: 250px; /* Adjusted to match sidebar width */
             padding: 20px;
             color: white;
             margin-right: 100px;
@@ -190,6 +189,12 @@ $result = $conn->query($sql);
             <i class="fas fa-user-alt"></i>
             <span>View Tenants</span>
         </a>
+
+        <a href="../admin-side/admin-transaction.php">
+            <i class="fas fa-user-alt"></i>
+            <span>Create Bills</span>
+        </a>
+
         <form method="post" action="../logout.php">
             <button type="submit" name="logout">
                 <i class="fas fa-sign-out-alt"></i>
@@ -204,10 +209,10 @@ $result = $conn->query($sql);
             <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Total Registered Tenants</h2>
             <p style="color: #ccc; font-size: 14px; line-height: 1.4; margin: 0;"><?php echo "Total: " . $totalTenants; ?></p>
 
-                <!-- Tenant Details Table -->
+            <!-- Tenant Details Table -->
             <section id="tenantDetails" style="margin-top: 20px;">
                 <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Tenant Details</h2>
-                <table style="width: 100%; border-collapse: collapse;">
+                <table>
                     <thead>
                         <tr>
                             <th style="color: white; border-bottom: 1px solid #444; padding: 8px;">Account Number</th>
@@ -236,81 +241,92 @@ $result = $conn->query($sql);
 
         <!-- Total Revenue Section -->
         <section id="totalRevenue" style="display: inline-block; width: 100%;padding: 15px; border-radius: 10px; background-color: #333; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); margin-top: 20px;">
-            <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Total Revenue</h2>
-            <p style="color: #ccc; font-size: 14px; line-height: 1.4; margin: 0;">Total Revenue: Pesos</p> <!-- Display total revenue --> 
-
-            <!-- Canvas for Chart.js -->
-            <canvas id="revenueChart" style="margin-top: 10px; max-height: 200px;"></canvas>
-
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script>
-                // Example data for Chart.js
-                var ctx = document.getElementById('revenueChart').getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-                        datasets: [{
-                            label: 'Revenue',
-                            data: [500, 300, 600, 300, 900, 1500], // Example static revenue data
-                            borderColor: '#4CAF50', // Green color for the line
-                            backgroundColor: 'rgba(76, 175, 80, 0.2)', // Green color with transparency for the fill
-                            borderWidth: 2,
-                            pointRadius: 5,
-                            pointBackgroundColor: '#4CAF50', // Green color for points
-                            pointBorderColor: '#4CAF50',
-                            pointHoverRadius: 7,
-                            pointHoverBackgroundColor: '#4CAF50',
-                            pointHoverBorderColor: '#4CAF50'
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        },
-                        responsive: true,
-                        maintainAspectRatio: false
-                    }
-                });
-            </script>
+            <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Total Revenue (Chart)</h2>
+            <canvas id="revenueChart" width="400" height="200"></canvas>
         </section>
 
-        <!-- Billing Logs -->
-        <section id="billingLogs" style="display: inline-block; width: 100%; padding: 15px; border-radius: 10px; background-color: #333; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); margin-top: 20px;">
-            <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Billing Logs</h2>
-            <table style="width: 100%; border-collapse: collapse;">
+        <!-- Paid Transactions Section -->
+        <section id="paidTransactions" style="display: inline-block; width: 100%; padding: 15px; border-radius: 10px; background-color: #333; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); margin-top: 20px;">
+            <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Paid Transactions</h2>
+            <table>
                 <thead>
                     <tr>
-                        <th style="color: white; border-bottom: 1px solid #444; padding: 8px;">Payer Name</th>
-                        <th style="color: white; border-bottom: 1px solid #444; padding: 8px;">Card Number</th>
-                        <th style="color: white; border-bottom: 1px solid #444; padding: 8px;">Expiry</th>
+                        <th style="color: white; border-bottom: 1px solid #444; padding: 8px;">Room Number</th>
                         <th style="color: white; border-bottom: 1px solid #444; padding: 8px;">Amount</th>
-                        <th style="color: white; border-bottom: 1px solid #444; padding: 8px;">Transaction ID</th>
+                        <th style="color: white; border-bottom: 1px solid #444; padding: 8px;">Description</th>
+                        <th style="color: white; border-bottom: 1px solid #444; padding: 8px;">Status</th>
                         <th style="color: white; border-bottom: 1px solid #444; padding: 8px;">Transaction Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
+                    if ($resultPaidTransactions->num_rows > 0) {
+                        while ($rowPaidTransactions = $resultPaidTransactions->fetch_assoc()) {
                             echo "<tr>";
-                            echo "<td style='color: #ccc; padding: 8px;'>{$row['payer_name']}</td>";
-                            echo "<td style='color: #ccc; padding: 8px;'>{$row['card_number']}</td>";
-                            echo "<td style='color: #ccc; padding: 8px;'>{$row['expiry']}</td>";
-                            echo "<td style='color: #ccc; padding: 8px;'>{$row['amount']}</td>";
-                            echo "<td style='color: #ccc; padding: 8px;'>{$row['transaction_id']}</td>";
-                            echo "<td style='color: #ccc; padding: 8px;'>{$row['transaction_date']}</td>";
+                            echo "<td style='color: #ccc; padding: 8px;'>{$rowPaidTransactions['room_number']}</td>";
+                            echo "<td style='color: #ccc; padding: 8px;'>{$rowPaidTransactions['amount']}</td>";
+                            echo "<td style='color: #ccc; padding: 8px;'>{$rowPaidTransactions['description']}</td>";
+                            echo "<td style='color: #ccc; padding: 8px;'>{$rowPaidTransactions['status']}</td>";
+                            echo "<td style='color: #ccc; padding: 8px;'>{$rowPaidTransactions['transaction_date']}</td>";
                             echo "</tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='6' style='color: #ccc; padding: 8px; text-align: center;'>No billing logs found.</td></tr>";
+                        echo "<tr><td colspan='5' style='color: #ccc; padding: 8px; text-align: center;'>No paid transactions found.</td></tr>";
                     }
                     ?>
                 </tbody>
             </table>
         </section>
     </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+// Revenue Line Chart
+var ctx = document.getElementById('revenueChart').getContext('2d');
+var revenueChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [<?php
+                    while ($rowRevenue = $resultRevenue->fetch_assoc()) {
+                        echo '"' . date('M', mktime(0, 0, 0, $rowRevenue['transaction_month'], 1)) . '", ';
+                    }
+                    ?>],
+        datasets: [{
+            label: 'Total Revenue',
+            data: [<?php
+                    $resultRevenue->data_seek(0); // Reset pointer
+                    while ($rowRevenue = $resultRevenue->fetch_assoc()) {
+                        echo $rowRevenue['total_amount'] . ', ';
+                    }
+                    ?>],
+            borderColor: 'rgb(170, 254, 2)', // Green color example
+            backgroundColor: 'rgba(170, 241, 28, 0.3)', // Lighter green for fill
+            borderWidth: 2,
+            pointRadius: 5,
+            pointBackgroundColor: 'rgb(170, 254, 2)', // Green points
+            pointBorderColor: 'rgb(170, 254, 2)',
+            pointHoverRadius: 7,
+            pointHoverBackgroundColor: 'rgba(75, 192, 192, 1)',
+            pointHoverBorderColor: 'rgba(75, 192, 192, 1)',
+            fill: true,
+            tension: 0.4 // Adjust tension for smooth curves
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
 </body>
 </html>
+
+<?php
+// Close database connection
+$conn->close();
+?>

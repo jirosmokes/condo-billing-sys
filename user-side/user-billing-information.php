@@ -38,55 +38,52 @@ if (isset($_POST['submit'])) {
     $country = mysqli_real_escape_string($conn, $_POST['country']);
     $amount_paid = mysqli_real_escape_string($conn, $_POST['amount']);
 
-    // Check if the selected bill ID is the next sequential bill to be paid
-    $previous_bill_id = getPreviousPaidBillId($transactions, $bill_id, $selected_room_number);
-    if ($previous_bill_id === null || $previous_bill_id === '') {
-        $error = "You must pay the previous bill before paying this one.";
-    } else {
-        // Check if the room number matches the current session room number
-        if (isset($transactions[$bill_id])) {
-            $transaction = $transactions[$bill_id];
-            if ($transaction['room_number'] != $selected_room_number) {
-                $error = "You cannot pay bills for a different room.";
-            } else {
-                // Retrieve amount from array for validation
-                $amount_in_db = $transaction['amount'];
+    // Check if the room number matches the current session room number
+    if (isset($transactions[$bill_id])) {
+        $transaction = $transactions[$bill_id];
+        if ($transaction['room_number'] != $selected_room_number) {
+            $error = "You cannot pay bills for a different room.";
+        } else {
+            // Retrieve amount from array for validation
+            $amount_in_db = $transaction['amount'];
 
-                // Validate if the paid amount matches the amount in database
-                if ($amount_paid == $amount_in_db) {
-                    // Update transaction status to "paid" and amount to 0
-                    $update_query = "UPDATE transactions SET status = 'paid', amount = 0 WHERE id = '$bill_id'";
-                    if (mysqli_query($conn, $update_query)) {
-                        // Success message
-                        $message = "Payment successful! Transaction ID: $bill_id";
+            // Validate if the paid amount matches the amount in database
+            if ($amount_paid == $amount_in_db) {
+                // Update transaction status to "paid" and amount to 0
+                $update_query = "UPDATE transactions SET status = 'paid' WHERE id = '$bill_id'";
+                if (mysqli_query($conn, $update_query)) {
+                    // Success message
+                    $message = "Payment successful! Transaction ID: $bill_id";
 
-                        // Update the local transaction array to reflect the status change
-                        $transactions[$bill_id]['status'] = 'paid';
-                        $transactions[$bill_id]['amount'] = 0;
+                    // Update the local transaction array to reflect the status change
+                    $transactions[$bill_id]['status'] = 'paid';
+                    // $transactions[$bill_id]['amount'] = 0;
 
-                        // Proceed to the next bill in sequence
-                        $next_bill_id = getNextUnpaidBillId($transactions, $bill_id, $selected_room_number);
-                        if ($next_bill_id !== null) {
-                            $update_next_query = "UPDATE transactions SET status = 'unpaid' WHERE id = '$next_bill_id'";
-                            if (mysqli_query($conn, $update_next_query)) {
-                                $transactions[$next_bill_id]['status'] = 'unpaid';
-                                $message .= "<br>Next bill (ID: $next_bill_id) is now ready for payment.";
-                            } else {
-                                $error = "Failed to update next bill status. Please try again.";
-                            }
+                    // Optionally, proceed to the next bill in sequence
+                    // This can be added if needed in the future
+                    /*
+                    $next_bill_id = getNextUnpaidBillId($transactions, $bill_id, $selected_room_number);
+                    if ($next_bill_id !== null) {
+                        $update_next_query = "UPDATE transactions SET status = 'unpaid' WHERE id = '$next_bill_id'";
+                        if (mysqli_query($conn, $update_next_query)) {
+                            $transactions[$next_bill_id]['status'] = 'unpaid';
+                            $message .= "<br>Next bill (ID: $next_bill_id) is now ready for payment.";
                         } else {
-                            $message .= "<br>No more unpaid bills for this room.";
+                            $error = "Failed to update next bill status. Please try again.";
                         }
                     } else {
-                        $error = "Failed to update transaction status. Please try again.";
+                        $message .= "<br>No more unpaid bills for this room.";
                     }
+                    */
                 } else {
-                    $error = "Paid amount does not match the amount in database. Please verify and try again.";
+                    $error = "Failed to update transaction status. Please try again.";
                 }
+            } else {
+                $error = "Paid amount does not match the amount in database. Please verify and try again.";
             }
-        } else {
-            $error = "Bill not found or does not belong to this room.";
         }
+    } else {
+        $error = "Bill not found or does not belong to this room.";
     }
 }
 
@@ -106,27 +103,26 @@ function getNextUnpaidBillId($transactions, $current_bill_id, $room_number) {
     return null;
 }
 
-// Function to get the ID of the previously paid bill from array
 function getPreviousPaidBillId($transactions, $current_bill_id, $room_number) {
-    $previous_bill_id = '';
+    $previous_bill_id = null;
     $found_current = false;
     foreach ($transactions as $id => $transaction) {
         if ($transaction['room_number'] == $room_number) {
-            if ($found_current) {
-                return $id;
-            }
             if ($id == $current_bill_id) {
-                $found_current = true;
+                return $previous_bill_id;
+            }
+            if ($transaction['status'] == 'paid') {
+                $previous_bill_id = $id;
             }
         }
     }
     return $previous_bill_id;
 }
 
+
 // Close connection (assuming your current code structure)
 $conn->close();
 ?>
-
 
 
 <!DOCTYPE html>
@@ -135,7 +131,86 @@ $conn->close();
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Payment Form</title>
+<link rel="stylesheet" href="../admin-style/admin-sidebar.css?v=<?php echo time(); ?>">
 <style>
+    /* Sidebar styles */
+    .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: linear-gradient(145deg, #1e1e1e, #2c2c2c);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 70px;
+            background: #222;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 15px 30px;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .sidebar a.active {
+            background-color: #575757;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+        }
+
+        .sidebar form {
+            margin-top: auto; /* Push the form to the bottom */
+        }
+
+        .sidebar form button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: block;
+            font-family: "Open Sans", sans-serif;
+            font-size: 16px;
+            line-height: 65px;
+            padding-left: 30px;
+            text-align: left;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .sidebar form button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar form button i {
+            margin-right: 10px;
+        }
+
+        .sidebar form button span {
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
     body {
         font-family: sans-serif;
         background-color: #202124;
@@ -237,8 +312,8 @@ $conn->close();
 }
 
 .card input[type="submit"], .card button {
-    background-color: #fb8c00;
-    color: white;
+    background-color: rgb(170, 254, 2);
+    color: black;
     padding: 12px 20px;
     border: none;
     border-radius: 5px;
@@ -246,11 +321,6 @@ $conn->close();
     width: 100%;
     margin-top: 10px;
 }
-
-.card input[type="submit"]:hover, .card button:hover {
-    background-color: #f57c00;
-}
-
 .card .bill-container {
     display: none;
     background-color: #2b2c30;
@@ -315,6 +385,43 @@ $conn->close();
 </style>
 </head>
 <body>
+<div class="sidebar">
+        <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
+
+        <!--a href="#" class="active">
+            <i class="fas fa-qrcode"></i>
+            <span>Dashboard</span>
+        </a-->
+
+        <a href="../user-side/user-view-profile.php " onclick="showContent('profile')">
+            <i class="fas fa-user-alt"></i>
+            <span>Profile</span>
+        </a>
+
+        <a href="../user-side/user-billing-information.php" onclick="showContent('bills')">
+          <i class="fa-solid fa-money-bills"></i>
+            <span>Bills</span>
+        </a>
+        <form method="post" action="../logout.php">
+            <button type="submit" name="logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </form>
+    </div>
+
+<?php if (!empty($message) || !empty($error)): ?>
+    <div class="container">
+        <?php if (!empty($message)): ?>
+            <p class="message"><?php echo $message; ?></p>
+        <?php endif; ?>
+        <?php if (!empty($error)): ?>
+            <p class="error"><?php echo $error; ?></p>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
+
 <?php if (!empty($transactions)): ?>
     <?php foreach ($transactions as $transaction): ?>
         <div class="container">
@@ -402,7 +509,6 @@ $conn->close();
         <input type="text" id="amount" name="amount" required>
     </div>
     <button class="pay-button" type="submit" name="submit">Pay Now</button>
-    <button type="button" class="cancel-button">Cancel</button>
 </form>
 
 <div id="billInfo" class="bill-container">

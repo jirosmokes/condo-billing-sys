@@ -114,26 +114,32 @@ if (!isset($_SESSION['account_number'])) {
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
+<div class="sidebar">
+    <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
-        <a href="../admin-side/admin-dbcontent.php" class="active" onclick="showContent('dashboard')">
-            <i class="fas fa-qrcode"></i>
-            <span>Dashboard</span>
-        </a>
+    <a href="../admin-side/admin-dbcontent.php" class="active">
+        <i class="fas fa-qrcode"></i>
+        <span>Dashboard</span>
+    </a>
 
-        <a href="../admin-side/admin-room-selection.php" onclick="showContent('view-tenants')">
-            <i class="fas fa-user-alt"></i>
-            <span>View Tenants</span>
-        </a>
+    <a href="../admin-side/admin-room-selection.php">
+        <i class="fas fa-user-alt"></i>
+        <span>View Tenants</span>
+    </a>
+    
+    <a href="../admin-side/admin-transaction.php">
+        <i class="fas fa-user-alt"></i>
+        <span>Create Bills</span>
+    </a>
 
-        <form method="post" action="../logout.php">
-            <button type="submit" name="logout">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </button>
-        </form>
-    </div>
+    <form method="post" action="../logout.php">
+        <button type="submit" name="logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </button>
+    </form>
+</div>
+
 
     <div id="content">
         <?php include 'admin-dbContent.php'; ?>
