@@ -10,6 +10,7 @@ if (!isset($_SESSION['account_number'])) {
 
 // Fetch user data based on account_number
 $account_number = $_SESSION['account_number'];
+$room_number = $_SESSION['room_number'];
 $sql = "SELECT * FROM users WHERE account_number = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $account_number);
@@ -33,6 +34,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profilePicture'])) {
     exit; // Ensure script stops after refresh
 }
 
+// Fetch billing logs based on room_number
+$billing_logs_sql = "SELECT due_date, amount, status FROM transactions WHERE room_number = ? ORDER BY due_date ASC";
+$stmt = $conn->prepare($billing_logs_sql);
+$stmt->bind_param("s", $room_number);
+$stmt->execute();
+$billing_logs_result = $stmt->get_result();
+
+$billing_logs = [];
+if ($billing_logs_result->num_rows > 0) {
+    while ($row = $billing_logs_result->fetch_assoc()) {
+        $billing_logs[] = $row;
+    }
+} else {
+    $billing_logs[] = ['NULL', 'NULL', 'NULL'];
+}
+
+$stmt->close();
 $conn->close();
 
 function upload_image($account_number, $conn) {
@@ -126,24 +144,10 @@ function upload_image($account_number, $conn) {
                         <th>Due Date</th>
                         <th>Amount</th>
                         <th>Status</th>
-                        <th>Date Paid</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                        // Assuming $billing_logs fetched from database
-                        $billing_logs = [
-                            ['N/A', 'N/A', 'N/A', 'N/A'],
-                            ['N/A', 'N/A', 'N/A', 'N/A'],
-                            ['N/A', 'N/A', 'N/A', 'N/A'],
-                            ['N/A', 'N/A', 'N/A', 'N/A'],
-                            ['N/A', 'N/A', 'N/A', 'N/A'],
-                            ['N/A', 'N/A', 'N/A', 'N/A'],
-                            ['N/A', 'N/A', 'N/A', 'N/A'],
-                            ['N/A', 'N/A', 'N/A', 'N/A'],
-                            ['N/A', 'N/A', 'N/A', 'N/A']
-                        ];
-
                         foreach ($billing_logs as $log) {
                             echo '<tr>';
                             foreach ($log as $item) {
