@@ -59,8 +59,6 @@ $resultPaidTransactions = $conn->query($sqlPaidTransactions);
 
     <link rel="stylesheet" href="../admin-style/admin-sidebar.css?v=<?php echo time(); ?>">
     <style>
-        
-        /* Content styles */
         #content {
             margin-left: 250px;
             padding: 20px;

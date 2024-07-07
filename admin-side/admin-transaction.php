@@ -169,8 +169,13 @@ if (isset($_GET['room_number'])) {
     </style>
 </head>
 <body>
-     <!-- SIDEBAR -->
+<<<<<<<<< Temporary merge branch 1
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+=========
+
      <div class="sidebar">
+>>>>>>>>> Temporary merge branch 2
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
         <a href="../admin-side/admin-dashboard.php" class="active" onclick="showContent('dashboard')">

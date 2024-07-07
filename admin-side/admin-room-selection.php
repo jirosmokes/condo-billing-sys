@@ -45,7 +45,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php require 'admin-room-details.php'; ?>
 
     <style>
-        /* Content styles */
         #content {
             margin-left: 250px;
             padding: 20px;
