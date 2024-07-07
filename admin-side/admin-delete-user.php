@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     $delete_sql = "DELETE FROM users WHERE room_number = '$roomnumber'";
     if ($conn->query($delete_sql) === TRUE) {
         $message = "Record deleted successfully";
-        // Refresh the rooms list after deletion
+        
         $rooms = [];
         $sql = "SELECT room_number FROM users";
         $result = $conn->query($sql);

@@ -1,28 +1,28 @@
 <?php 
 require '../connection-db.php';
 
-// Fetch distinct room numbers from the users table
+
 $rooms_result = mysqli_query($conn, "SELECT room_number FROM users WHERE access_lvl = 'user'");
 $rooms = [];
 while ($row = mysqli_fetch_assoc($rooms_result)) {
-    $rooms[] = $row['room_number']; // Store only the room_number in the array
+    $rooms[] = $row['room_number']; 
 }
 
 $errors = [];
 
-// Handle form submission
-// Handle form submission
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(isset($_POST['submit'])) {
-        // Validate and sanitize inputs
+      
         $room_number = mysqli_real_escape_string($conn, $_POST['roomnumber']);
         $amount = mysqli_real_escape_string($conn, $_POST['amount']);
         $description = mysqli_real_escape_string($conn, $_POST['description']);
         $startdate = ($_POST['startdate'] != '') ? mysqli_real_escape_string($conn, $_POST['startdate']) : '1970-01-01';
         $duedate = ($_POST['duedate'] != '') ? mysqli_real_escape_string($conn, $_POST['duedate']) : '1970-01-01';
-        $status = "pending"; // Default to pending if not set
+        $status = "pending";
 
-        // Basic validation
+       
         if (empty($room_number)) {
             $errors[] = "Room number is required.";
         }
@@ -38,14 +38,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $errors[] = "Invalid status value.";
         }
 
-        // If no validation errors, proceed with insertion
+       
         if (empty($errors)) {
-            // Insert into transactions table
+            
             $insert_query = "INSERT INTO transactions (room_number, amount, description, start_date, due_date, status) 
                             VALUES ('$room_number', '$amount', '$description', '$startdate', '$duedate', '$status')";
             
             if (mysqli_query($conn, $insert_query)) {
-                // Redirect to the same page to prevent form resubmission
+               
                 header("Location: " . $_SERVER['PHP_SELF']);
                 exit();
             } else {
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-// Fetch transaction details for a specific room number if selected
+
 $transactions = [];
 if (isset($_GET['room_number'])) {
     $selected_room_number = mysqli_real_escape_string($conn, $_GET['room_number']);
@@ -123,7 +123,7 @@ if (isset($_GET['room_number'])) {
             border-radius: 5px;
             background-color: #38393d;
             color: #fff;
-            box-sizing: border-box; /* Ensures padding and border are included in the width */
+            box-sizing: border-box; 
         }
 
         input[type="submit"] {
@@ -169,8 +169,13 @@ if (isset($_GET['room_number'])) {
     </style>
 </head>
 <body>
+<<<<<<<<< Temporary merge branch 1
       <!-- SIDEBAR -->
       <div class="sidebar">
+=========
+
+     <div class="sidebar">
+>>>>>>>>> Temporary merge branch 2
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
         <a href="../admin-side/admin-dashboard.php" class="active" onclick="showContent('dashboard')">

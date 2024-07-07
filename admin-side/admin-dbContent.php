@@ -1,5 +1,5 @@
 <?php
-// Database connection (replace with your actual connection details)
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -7,12 +7,11 @@ $dbname = "dorm_hub_db";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
+
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch total number of registered tenants
 $sql = "SELECT COUNT(*) AS total_tenants FROM users";
 $result = $conn->query($sql);
 
@@ -22,11 +21,11 @@ if ($result->num_rows > 0) {
     $totalTenants = $row['total_tenants'];
 }
 
-// Fetch tenant details excluding admin
+
 $sql_details = "SELECT account_number, last_name, room_number FROM users WHERE access_lvl != 'admin'";
 $result_details = $conn->query($sql_details);
 
-// Fetch total revenue per month for Chart.js
+
 $sqlRevenue = "
     SELECT SUM(amount) AS total_amount, MONTH(start_date) AS transaction_month
     FROM transactions 
@@ -37,7 +36,7 @@ $sqlRevenue = "
 
 $resultRevenue = $conn->query($sqlRevenue);
 
-// Fetch detailed paid transactions for the table
+
 $sqlPaidTransactions = "
     SELECT room_number, amount, description, status, transaction_date
     FROM transactions 
@@ -60,10 +59,8 @@ $resultPaidTransactions = $conn->query($sqlPaidTransactions);
 
     <link rel="stylesheet" href="../admin-style/admin-sidebar.css?v=<?php echo time(); ?>">
     <style>
-        
-        /* Content styles */
         #content {
-            margin-left: 250px; /* Adjusted to match sidebar width */
+            margin-left: 250px;
             padding: 20px;
             color: white;
             margin-right: 100px;
@@ -121,12 +118,12 @@ $resultPaidTransactions = $conn->query($sqlPaidTransactions);
     </div>
 
     <div id="content">
-        <!-- Total Tenants Section -->
+       
         <section id="totalTenants" style="display: inline-block; width: 100%; padding: 15px; border-radius: 10px; background-color: #333; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);">
             <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Total Registered Tenants</h2>
             <p style="color: #ccc; font-size: 14px; line-height: 1.4; margin: 0;"><?php echo "Total: " . $totalTenants; ?></p>
 
-            <!-- Tenant Details Table -->
+           
             <section id="tenantDetails" style="margin-top: 20px;">
                 <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Tenant Details</h2>
                 <table>
@@ -156,13 +153,13 @@ $resultPaidTransactions = $conn->query($sqlPaidTransactions);
             </section>
         </section>
 
-        <!-- Total Revenue Section -->
+      
         <section id="totalRevenue" style="display: inline-block; width: 100%;padding: 15px; border-radius: 10px; background-color: #333; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); margin-top: 20px;">
             <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Total Revenue (Chart)</h2>
             <canvas id="revenueChart" width="400" height="200"></canvas>
         </section>
 
-        <!-- Paid Transactions Section -->
+
         <section id="paidTransactions" style="display: inline-block; width: 100%; padding: 15px; border-radius: 10px; background-color: #333; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); margin-top: 20px;">
             <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Paid Transactions</h2>
             <table>
@@ -196,10 +193,10 @@ $resultPaidTransactions = $conn->query($sqlPaidTransactions);
         </section>
     </div>
 
-    <!-- Chart.js -->
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-// Revenue Line Chart
+
 var ctx = document.getElementById('revenueChart').getContext('2d');
 var revenueChart = new Chart(ctx, {
     type: 'line',
@@ -212,22 +209,22 @@ var revenueChart = new Chart(ctx, {
         datasets: [{
             label: 'Total Revenue',
             data: [<?php
-                    $resultRevenue->data_seek(0); // Reset pointer
+                    $resultRevenue->data_seek(0); 
                     while ($rowRevenue = $resultRevenue->fetch_assoc()) {
                         echo $rowRevenue['total_amount'] . ', ';
                     }
                     ?>],
-            borderColor: 'rgb(170, 254, 2)', // Green color example
-            backgroundColor: 'rgba(170, 241, 28, 0.3)', // Lighter green for fill
+            borderColor: 'rgb(170, 254, 2)', 
+            backgroundColor: 'rgba(170, 241, 28, 0.3)', 
             borderWidth: 2,
             pointRadius: 5,
-            pointBackgroundColor: 'rgb(170, 254, 2)', // Green points
+            pointBackgroundColor: 'rgb(170, 254, 2)', 
             pointBorderColor: 'rgb(170, 254, 2)',
             pointHoverRadius: 7,
             pointHoverBackgroundColor: 'rgba(75, 192, 192, 1)',
             pointHoverBorderColor: 'rgba(75, 192, 192, 1)',
             fill: true,
-            tension: 0.4 // Adjust tension for smooth curves
+            tension: 0.4 
         }]
     },
     options: {
@@ -244,6 +241,6 @@ var revenueChart = new Chart(ctx, {
 </html>
 
 <?php
-// Close database connection
+
 $conn->close();
 ?>
