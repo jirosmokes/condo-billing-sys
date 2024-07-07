@@ -77,7 +77,7 @@ $resultPaidTransactions = $conn->query($sqlPaidTransactions);
 
         th, td {
             padding: 10px;
-            text-align: left;
+            text-align: center;
         }
 
         th {
@@ -120,11 +120,11 @@ $resultPaidTransactions = $conn->query($sqlPaidTransactions);
     <div id="content">
        
         <section id="totalTenants" style="display: inline-block; width: 100%; padding: 15px; border-radius: 10px; background-color: #333; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);">
-            <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Total Registered Tenants</h2>
-            <p style="color: #ccc; font-size: 14px; line-height: 1.4; margin: 0;"><?php echo "Total: " . $totalTenants; ?></p>
+            <h2 style="color: white; font-size: 20px; margin-bottom: 8px; text-align: center;">Total Registered Tenants</h2>
+            <p style="color: rgb(170, 254, 2); font-size: 24px; font-weight: bolder; line-height: 1.4; margin: 0; text-align: center;"><?php echo "Total: " . $totalTenants; ?></p>
 
            
-            <section id="tenantDetails" style="margin-top: 20px;">
+            <section id="tenantDetails" style="margin-top: 20px; text-align: center;">
                 <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Tenant Details</h2>
                 <table>
                     <thead>
@@ -155,7 +155,7 @@ $resultPaidTransactions = $conn->query($sqlPaidTransactions);
 
       
         <section id="totalRevenue" style="display: inline-block; width: 100%;padding: 15px; border-radius: 10px; background-color: #333; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); margin-top: 20px;">
-            <h2 style="color: white; font-size: 20px; margin-bottom: 8px;">Total Revenue (Chart)</h2>
+            <h2 style="color: white; font-size: 20px; margin-bottom: 8px; text-align: center;">Total Revenue (Chart)</h2>
             <canvas id="revenueChart" width="400" height="200"></canvas>
         </section>
 
