@@ -5,8 +5,9 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family:'roboto';
 }
+
 .card {
     background-color: #333;
     color: #fff;
@@ -18,6 +19,7 @@ body {
     flex-direction: column;
     align-items: flex-start;
 }
+
 .header {
     display: flex;
     flex-direction: row;
@@ -25,6 +27,7 @@ body {
     width: 100%;
     margin-bottom: 20px;
 }
+
 .profile-pic {
     width: 150px;
     height: 150px;
@@ -36,9 +39,11 @@ body {
     position: relative;
     cursor: pointer;
 }
+
 .profile-pic input[type="file"] {
     display: none;
 }
+
 .upload-label {
     position: absolute;
     top: 0;
@@ -54,54 +59,65 @@ body {
     opacity: 0;
     transition: opacity 0.3s ease;
 }
+
 .profile-pic:hover .upload-label {
     opacity: 1;
 }
+
 .info {
     flex-grow: 1;
 }
+
 .info h2 {
     margin: 0;
     margin-bottom: 10px;
 }
+
 .info div {
     margin-bottom: 10px;
 }
+
 .info div:last-child {
     margin-bottom: 0;
 }
+
 .info .left, .info .right {
     display: inline-block;
     vertical-align: top;
     width: 48%;
 }
+
 .info .left {
     margin-right: 4%;
 }
+
 .table-container {
     width: 100%;
-    max-height: 256px; 
-    overflow: auto; 
-    
+    overflow: hidden;
+    margin-bottom: 20px; /* Adjust the spacing between the tables */
 }
 
-table {
+.table-container table {
     width: 100%;
     border-collapse: collapse;
-    
 }
 
-table, th, td {
+.table-container th, .table-container td {
     border: 1px solid #555;
-}
-
-th, td {
     padding: 10px;
     text-align: left;
 }
 
-th {
+.table-container th {
     background-color: #444;
-    color: #fff; 
+    color: #fff; /* Added for better contrast */
+    position: sticky;
+    top: 0; /* Stick to the top of the container */
+    z-index: 1; /* Ensure it stays above other elements */
+
 }
 
+.scrollable-table {
+    max-height: 256px; /* Adjust the height as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+}

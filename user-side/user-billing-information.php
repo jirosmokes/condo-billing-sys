@@ -38,35 +38,66 @@ if (isset($_POST['submit'])) {
     $country = mysqli_real_escape_string($conn, $_POST['country']);
     $amount_paid = mysqli_real_escape_string($conn, $_POST['amount']);
 
-    
-    if (isset($transactions[$bill_id])) {
-        $transaction = $transactions[$bill_id];
-        if ($transaction['room_number'] != $selected_room_number) {
-            $error = "You cannot pay bills for a different room.";
-        } else {
-            
-            $amount_in_db = $transaction['amount'];
-
-          
-            if ($amount_paid == $amount_in_db) {
-                
-                $update_query = "UPDATE transactions SET status = 'paid' WHERE id = '$bill_id'";
-                if (mysqli_query($conn, $update_query)) {
-                  
-                    $message = "Payment successful! Transaction ID: $bill_id";
-
-                   
-                    $transactions[$bill_id]['status'] = 'paid';
-                  
-                } else {
-                    $error = "Failed to update transaction status. Please try again.";
-                }
-            } else {
-                $error = "Paid amount does not match the amount in database. Please verify and try again.";
-            }
-        }
+    // Perform input validation
+    if (empty($bill_id) || empty($payer_name) || empty($card_number) || empty($expiry) || empty($cvc) || empty($country) || empty($amount_paid)) {
+        $error = 'All fields are required.';
     } else {
-        $error = "Bill not found or does not belong to this room.";
+        // Check if the room number matches the current session room number
+        if (isset($transactions[$bill_id])) {
+            $transaction = $transactions[$bill_id];
+            if ($transaction['room_number'] != $selected_room_number) {
+                $error = "You cannot pay bills for a different room.";
+            } else {
+                // Retrieve amount from array for validation
+                $amount_in_db = $transaction['amount'];
+
+                // Validate if the paid amount matches the amount in database
+                if ($amount_paid == $amount_in_db) {
+                    // Insert data into the database
+                    $query = "INSERT INTO billing_information (room_number, card_number, expiry, cvc, country, amount, transaction_id, transaction_date, payer_name)
+                              VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)";
+
+                    if ($stmt = $conn->prepare($query)) {
+                        $transaction_id = uniqid('txn_'); // Generate a unique transaction ID
+                        $stmt->bind_param('sssssdss', $transaction['room_number'], $card_number, $expiry, $cvc, $country, $amount_paid, $transaction_id, $payer_name);
+
+                        if ($stmt->execute()) {
+                            $message = 'Payment successful. Thank you!';
+                            // Update transaction status to "paid"
+                            $update_query = "UPDATE transactions SET status = 'paid' WHERE id = ?";
+                            if ($update_stmt = $conn->prepare($update_query)) {
+                                $update_stmt->bind_param('i', $bill_id);
+                                $update_stmt->execute();
+                                $update_stmt->close();
+
+                                // Display transaction information
+                                echo "<script>
+                                    document.getElementById('transactionId').textContent = '{$transaction_id}';
+                                    document.getElementById('amountPaid').textContent = '{$amount_paid}';
+                                    document.getElementById('payerName').textContent = '{$payer_name}';
+                                    document.getElementById('billInfo').style.display = 'block';
+                                    document.getElementById('paymentForm').style.display = 'none';
+                                </script>";
+
+                                // Update the local transaction array to reflect the status change
+                                $transactions[$bill_id]['status'] = 'paid';
+                            } else {
+                                $error = 'Error updating transaction status.';
+                            }
+                        } else {
+                            $error = 'Error inserting data into the database.';
+                        }
+                        $stmt->close();
+                    } else {
+                        $error = 'Database query preparation failed.';
+                    }
+                } else {
+                    $error = "Paid amount does not match the amount in database. Please verify and try again.";
+                }
+            }
+        } else {
+            $error = "Bill not found or does not belong to this room.";
+        }
     }
 }
 
@@ -102,8 +133,7 @@ function getPreviousPaidBillId($transactions, $current_bill_id, $room_number) {
     return $previous_bill_id;
 }
 
-
-// Close connection (assuming your current code structure)
+// Close connection
 $conn->close();
 ?>
 
