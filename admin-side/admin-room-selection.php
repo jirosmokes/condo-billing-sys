@@ -140,7 +140,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="sidebar">
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
-        <a href="../admin-side/admin-dashbaord" class="active" onclick="showContent('dashboard')">
+        <a href="../admin-side/admin-dashboard.php" class="active" onclick="showContent('dashboard')">
             <i class="fas fa-qrcode"></i>
             <span>Dashboard</span>
         </a>
@@ -154,12 +154,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <i class="fa-solid fa-money-bills"></i>
             <span>Revenue</span>
         </a>
-
-        <a href="#">
-            <i class="far fa-question-circle"></i>
-            <span>About</span>
-        </a>
-
         <form method="post" action="../logout.php">
             <button type="submit" name="logout">
                 <i class="fas fa-sign-out-alt"></i>

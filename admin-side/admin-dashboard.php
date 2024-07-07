@@ -131,12 +131,6 @@ if (!isset($_SESSION['account_number'])) {
             <i class="fa-solid fa-money-bills"></i>
             <span>Revenue</span>
         </a>
-
-        <a href="#">
-            <i class="far fa-question-circle"></i>
-            <span>About</span>
-        </a>
-
         <form method="post" action="../logout.php">
             <button type="submit" name="logout" action="../logout.php">
                 <i class="fas fa-sign-out-alt"></i>

@@ -231,26 +231,20 @@ $conn->close();
     <div class="sidebar">
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
-        <a href="../user-side/user-billing-information.php" class="active" onclick="showContent('dashboard')">
+        <a href="../user-side/user-billing-information.php" class="active">
             <i class="fas fa-qrcode"></i>
             <span>Dashboard</span>
         </a>
 
-        <a href="../admin-side/admin-room-selection.php" onclick="showContent('view-tenants')">
+        <a href="../admin-side/admin-room-selection.php">
             <i class="fas fa-user-alt"></i>
             <span>View Tenants</span>
         </a>
 
-        <a href="#" onclick="showContent('view-revenue')">
+        <a href="#">
             <i class="fa-solid fa-money-bills"></i>
             <span>Revenue</span>
         </a>
-
-        <a href="#">
-            <i class="far fa-question-circle"></i>
-            <span>About</span>
-        </a>
-
         <form method="post" action="">
             <button type="submit" name="logout">
                 <i class="fas fa-sign-out-alt"></i>
@@ -303,28 +297,5 @@ $conn->close();
             <p>Amount Paid: ₱<span id="amountPaid"></span></p>
         </div>
     </div>
-
-    <script>
-        const paymentForm = document.getElementById('paymentForm');
-        const billInfo = document.getElementById('billInfo');
-        const transactionIdSpan = document.getElementById('transactionId');
-        const amountPaidSpan = document.getElementById('amountPaid');
-
-        paymentForm.addEventListener('submit', (event) => {
-            event.preventDefault(); 
-            
-            const amount = document.getElementById('amount').value;
-            const transactionId = Math.random().toString(36).substr(2, 9).toUpperCase();
-
-            transactionIdSpan.textContent = transactionId;
-            amountPaidSpan.textContent = amount;
-            billInfo.style.display = 'block';
-        });
-
-        const cancelButton = document.querySelector('.cancel-button');
-        cancelButton.addEventListener('click', () => {
-            alert('Payment cancelled!');
-        });
-    </script>
 </body>
 </html>

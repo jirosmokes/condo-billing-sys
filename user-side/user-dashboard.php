@@ -109,26 +109,15 @@
             <span>Dashboard</span>
         </a>
 
-        <a href="#" onclick="showContent('profile')">
+        <a href="#">
             <i class="fas fa-user-alt"></i>
             <span>Profile</span>
         </a>
 
-        <a href="#" onclick="showContent('bills')">
+        <a href="#">
           <i class="fa-solid fa-money-bills"></i>
             <span>Bills</span>
         </a>
-
-        <a href="#">
-            <i class="far fa-question-circle"></i>
-            <span>About</span>
-        </a>
-
-        <a href="#">
-            <i class="fa fa-gear"></i>
-            <span>Settings</span>
-        </a>
-
         <form method="post" action="../logout.php">
             <button type="submit" name="logout">
                 <i class="fas fa-sign-out-alt"></i>
