@@ -104,6 +104,10 @@
 <div class="container">
     <h2>Card Details</h2>
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="paymentForm">
+        <div class="form-group">
+            <label for="payer_name">Payer Name</label>
+            <input type="text" id="payer_name" name="payer_name" placeholder="John Doe" required>
+        </div>
         <div class="card-number">
             <label for="card_number">Card Number</label>
             <input type="text" id="card_number" name="card_number" placeholder="xxxx xxxx xxxx xxxx" required>
@@ -144,6 +148,7 @@
         <p>Thank you for your payment!</p>
         <p>Transaction ID: <span id="transactionId"></span></p>
         <p>Amount Paid: ₱<span id="amountPaid"></span></p>
+        <p>Payer Name: <span id="payerName"></span></p>
     </div>
 
     <p class="disclaimer">
@@ -169,6 +174,7 @@
         }
 
         // Validate and sanitize input data
+        $payer_name = mysqli_real_escape_string($conn, $_POST['payer_name']);
         $card_number = mysqli_real_escape_string($conn, $_POST['card_number']);
         $expiry = mysqli_real_escape_string($conn, $_POST['expiry']);
         $cvc = mysqli_real_escape_string($conn, $_POST['cvc']);
@@ -176,14 +182,18 @@
         $amount = mysqli_real_escape_string($conn, $_POST['amount']);
         $transaction_id = uniqid(); // Generate a unique transaction ID
 
+        // Get current date and time for transaction_date
+        $transaction_date = date('Y-m-d H:i:s');
+
         // SQL insert statement
-        $sql = "INSERT INTO billing_information (card_number, expiry, cvc, country, amount, transaction_id)
-                VALUES ('$card_number', '$expiry', '$cvc', '$country', '$amount', '$transaction_id')";
+        $sql = "INSERT INTO billing_information (payer_name, card_number, expiry, cvc, country, amount, transaction_id, transaction_date)
+                VALUES ('$payer_name', '$card_number', '$expiry', '$cvc', '$country', '$amount', '$transaction_id', '$transaction_date')";
 
         if ($conn->query($sql) === TRUE) {
             echo '<script>
                     document.getElementById("transactionId").textContent = "' . $transaction_id . '";
                     document.getElementById("amountPaid").textContent = "' . $amount . '";
+                    document.getElementById("payerName").textContent = "' . $payer_name . '";
                     document.getElementById("billInfo").style.display = "block";
                   </script>';
         } else {

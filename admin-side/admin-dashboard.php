@@ -139,15 +139,6 @@ if (isset($_POST['logout'])) {
             <span>View Tenants</span>
         </a>
 
-        <a href="#" onclick="showContent('view-revenue')">
-            <i class="fa-solid fa-money-bills"></i>
-            <span>Revenue</span>
-        </a>
-        <a href="../admin-side/admin-about-team.php" onclick="showContent('view-about')>
-            <i class="far fa-question-circle"></i>
-            <span>About</span>
-        </a>
-
         <form method="post" action="../logout.php">
             <button type="submit" name="logout">
                 <i class="fas fa-sign-out-alt"></i>
