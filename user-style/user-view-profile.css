@@ -114,6 +114,7 @@ body {
     position: sticky;
     top: 0; /* Stick to the top of the container */
     z-index: 1; /* Ensure it stays above other elements */
+
 }
 
 .scrollable-table {
