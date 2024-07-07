@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php require 'admin-room-details.php'; ?>
 
     <style>
-        /* Sidebar styles */
+    
         .sidebar {
             position: fixed;
             top: 0;
@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .sidebar form {
-            margin-top: auto; /* Push the form to the bottom */
+            margin-top: auto; 
         }
 
         .sidebar form button {
@@ -121,7 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             text-transform: uppercase;
         }
 
-        /* Content styles */
+      
         #content {
             margin-left: 250px;
             padding: 20px;
@@ -136,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
 </head>
 <body>
-    <!-- SIDEBAR -->
+  
     <div class="sidebar">
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
@@ -162,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </button>
         </form>
     </div>
-    <!-- SIDEBAR -->
+  
     <form method="post">
         <div class="buttons">
             <button type="submit" name="add"><i class="fa-solid fa-user-plus"></i></button>

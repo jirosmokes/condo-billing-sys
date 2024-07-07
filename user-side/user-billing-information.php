@@ -1,6 +1,6 @@
 <?php
 session_start();
-// Check if session variable for admin login is not set, redirect to login page
+
 if (!isset($_SESSION['account_number'])) {
     header("Location: ../landing-page.php");
     exit();
@@ -8,27 +8,27 @@ if (!isset($_SESSION['account_number'])) {
 
 require '../connection-db.php';
 
-// Fetch distinct room numbers from the users table
+
 $rooms_result = mysqli_query($conn, "SELECT room_number FROM users WHERE access_lvl = 'user'");
 $rooms = [];
 while ($row = mysqli_fetch_assoc($rooms_result)) {
-    $rooms[] = $row['room_number']; // Store only the room_number in the array
+    $rooms[] = $row['room_number']; 
 }
 
 $transactions = [];
 $selected_room_number = mysqli_real_escape_string($conn, $_SESSION['room_number']);
 
-// Fetch all transactions for the selected room into an array
+
 $transactions_result = mysqli_query($conn, "SELECT * FROM transactions WHERE room_number = '$selected_room_number' ORDER BY id ASC");
 while ($row = mysqli_fetch_assoc($transactions_result)) {
-    $transactions[$row['id']] = $row; // Store transaction details with ID as the key
+    $transactions[$row['id']] = $row; 
 }
 
-// Initialize message variables
+
 $message = '';
 $error = '';
 
-// Handle form submission
+
 if (isset($_POST['submit'])) {
     $bill_id = mysqli_real_escape_string($conn, $_POST['bill_id']);
     $payer_name = mysqli_real_escape_string($conn, $_POST['payer_name']);
@@ -38,43 +38,26 @@ if (isset($_POST['submit'])) {
     $country = mysqli_real_escape_string($conn, $_POST['country']);
     $amount_paid = mysqli_real_escape_string($conn, $_POST['amount']);
 
-    // Check if the room number matches the current session room number
+    
     if (isset($transactions[$bill_id])) {
         $transaction = $transactions[$bill_id];
         if ($transaction['room_number'] != $selected_room_number) {
             $error = "You cannot pay bills for a different room.";
         } else {
-            // Retrieve amount from array for validation
+            
             $amount_in_db = $transaction['amount'];
 
-            // Validate if the paid amount matches the amount in database
+          
             if ($amount_paid == $amount_in_db) {
-                // Update transaction status to "paid" and amount to 0
+                
                 $update_query = "UPDATE transactions SET status = 'paid' WHERE id = '$bill_id'";
                 if (mysqli_query($conn, $update_query)) {
-                    // Success message
+                  
                     $message = "Payment successful! Transaction ID: $bill_id";
 
-                    // Update the local transaction array to reflect the status change
+                   
                     $transactions[$bill_id]['status'] = 'paid';
-                    // $transactions[$bill_id]['amount'] = 0;
-
-                    // Optionally, proceed to the next bill in sequence
-                    // This can be added if needed in the future
-                    /*
-                    $next_bill_id = getNextUnpaidBillId($transactions, $bill_id, $selected_room_number);
-                    if ($next_bill_id !== null) {
-                        $update_next_query = "UPDATE transactions SET status = 'unpaid' WHERE id = '$next_bill_id'";
-                        if (mysqli_query($conn, $update_next_query)) {
-                            $transactions[$next_bill_id]['status'] = 'unpaid';
-                            $message .= "<br>Next bill (ID: $next_bill_id) is now ready for payment.";
-                        } else {
-                            $error = "Failed to update next bill status. Please try again.";
-                        }
-                    } else {
-                        $message .= "<br>No more unpaid bills for this room.";
-                    }
-                    */
+                  
                 } else {
                     $error = "Failed to update transaction status. Please try again.";
                 }

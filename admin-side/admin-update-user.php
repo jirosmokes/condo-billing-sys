@@ -1,24 +1,24 @@
 <?php
-require '../connection-db.php'; // Include your database connection script
-include 'admin-room-details.php'; // Assuming this file defines $rooms array
+require '../connection-db.php'; 
+include 'admin-room-details.php'; 
 
-// Check if form is submitted
+
 if (isset($_POST['search'])) {
     $roomnumber = $_POST['roomnumber'];
 
-    // Query to fetch user data based on room number
+   
     $query = "SELECT * FROM users WHERE room_number = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('s', $roomnumber);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Fetch user data into an associative array
+  
     $users = [];
     while ($row = $result->fetch_assoc()) {
         $users[] = $row;
     }
-    // Close statement and result set
+ 
     $stmt->close();
     $result->close();
 }
@@ -33,12 +33,12 @@ if(isset($_POST['submit-update'])) {
     $emergency_number = $_POST['emergency_number'];
     $room_number = $_POST['roomnumber']; 
 
-    // Query to update user data
+ 
     $query = "UPDATE users SET first_name = ?, middle_name = ?, last_name = ?, school = ?, contact_number = ?, emergency_number = ? WHERE room_number = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('sssssss', $firstname, $middlename, $lastname, $school, $contact_number, $emergency_number, $room_number);
 
-    // Execute the update query
+  
     if ($stmt->execute()) {
         $message = "User data updated successfully!";
         $message_validation = true;
@@ -47,7 +47,7 @@ if(isset($_POST['submit-update'])) {
         $message_validation = false;
     }
 
-    // Close statement
+
     $stmt->close();
 }
 

@@ -2,13 +2,13 @@
 session_start();
 require '../connection-db.php';
 
-// Check if user is logged in
+
 if (!isset($_SESSION['account_number'])) {
     header('Location: ../user-side/user-dashboard.php');
     exit;
 }
 
-// Fetch user data based on account_number
+
 $account_number = $_SESSION['account_number'];
 $room_number = $_SESSION['room_number'];
 $sql = "SELECT * FROM users WHERE account_number = ?";
@@ -26,15 +26,15 @@ if ($result->num_rows > 0) {
 
 $stmt->close();
 
-// Handle image upload
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profilePicture'])) {
     $uploadMessage = upload_image($account_number, $conn);
     echo "<script>alert('$uploadMessage');</script>";
-    header("Refresh:0"); // Refresh the page to show the updated image
-    exit; // Ensure script stops after refresh
+    header("Refresh:0");
+    exit; 
 }
 
-// Fetch billing logs based on room_number
+
 $billing_logs_sql = "SELECT due_date, amount, status FROM transactions WHERE room_number = ? ORDER BY due_date ASC";
 $stmt = $conn->prepare($billing_logs_sql);
 $stmt->bind_param("s", $room_number);
@@ -61,29 +61,29 @@ function upload_image($account_number, $conn) {
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
         
-        // Check if file is an actual image
+        
         $check = getimagesize($image["tmp_name"]);
         if ($check === false) {
             return "File is not an image.";
         }
 
-        // Check file size
+        
         if ($image["size"] > 500000) {
             return "Sorry, your file is too large.";
         }
 
-        // Allow certain file formats
+       
         $allowedFormats = ["jpg", "jpeg", "png", "gif"];
         if (!in_array($imageFileType, $allowedFormats)) {
             return "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
         }
 
-        // Check if file already exists
+        
         if (file_exists($target_file)) {
             return "Sorry, file already exists.";
         }
 
-        // Attempt to move the uploaded file
+      
         if (move_uploaded_file($image["tmp_name"], $target_file)) {
             $imagePath = "images/" . basename($image["name"]);
             $sql = "UPDATE users SET image = ? WHERE account_number = ?";
@@ -128,8 +128,7 @@ function upload_image($account_number, $conn) {
                 <div class="left">
                     <div>Email: <?php echo htmlspecialchars($user['account_number']); ?></div>
                     <div>Contact No.: <?php echo htmlspecialchars($user['contact_number']); ?></div>
-                <!--/div>
-                <div class="right"-->
+                
                     <div>School: <?php echo htmlspecialchars($user['school']); ?></div>
                     <div>Room No.: <?php echo htmlspecialchars($user['room_number']); ?></div>
                     <div>Emergency No.: <?php echo htmlspecialchars($user['emergency_number']); ?></div>

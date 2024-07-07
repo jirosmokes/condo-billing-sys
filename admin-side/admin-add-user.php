@@ -24,7 +24,7 @@ if (isset($_POST["submit-add"])) {
             $school = $_POST['school'];
             $contactnumber = $_POST["contact_number"];
             $emergencynumber = $_POST["emergency_number"];
-            $access_lvl = "user"; // Set access level to user
+            $access_lvl = "user"; 
 
             $stmt = $conn->prepare("INSERT INTO users (account_number, account_password, first_name, middle_name, last_name, school, contact_number, emergency_number, room_number, access_lvl) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param("ssssssssss", $account_number, $password, $firstname, $middlename, $lastname, $school, $contactnumber, $emergencynumber, $room_number, $access_lvl);
