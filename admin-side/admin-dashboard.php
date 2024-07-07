@@ -3,23 +3,11 @@
 session_start();
 
 // Check if session variable for admin login is not set, redirect to login page
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    #header("Location: admin-landing.php");
-    #exit();
-}
-
-// Logout logic
-if (isset($_POST['logout'])) {
-    // Unset all session variables
-    session_unset();
-    
-    // Destroy the session
-    session_destroy();
-    
-    // Redirect to landing page after logout
+if (!isset($_SESSION['account_number'])) {
     header("Location: ../landing-page.php");
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -139,15 +127,6 @@ if (isset($_POST['logout'])) {
             <span>View Tenants</span>
         </a>
 
-        <a href="#" onclick="showContent('view-revenue')">
-            <i class="fa-solid fa-money-bills"></i>
-            <span>Revenue</span>
-        </a>
-        <a href="../admin-side/admin-about-team.php" onclick="showContent('view-about')>
-            <i class="far fa-question-circle"></i>
-            <span>About</span>
-        </a>
-
         <form method="post" action="../logout.php">
             <button type="submit" name="logout">
                 <i class="fas fa-sign-out-alt"></i>
@@ -159,7 +138,5 @@ if (isset($_POST['logout'])) {
     <div id="content">
         <?php include 'admin-dbContent.php'; ?>
     </div>
-
-
 </body>
 </html>
