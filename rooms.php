@@ -8,9 +8,9 @@ function displayRoomStatus($conn, $room_number) {
     $result = $conn->query($check_existing_sql);
 
     if ($result->num_rows > 0) {
-        echo '<i class="fa-solid fa-lock"></i>';
+        echo '<i class="fa-solid fa-door-closed" style="font-size: 2em"></i>';
     } else {
-        echo '<i class="fa-solid fa-unlock-keyhole"></i>';
+        echo '<i class="fa-solid fa-door-open" style="font-size: 2em"></i>';
     }
 }
 ?>

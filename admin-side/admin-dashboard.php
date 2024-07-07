@@ -1,14 +1,3 @@
-<?php
-// Start session if it's not already started
-session_start();
-
-// Check if session variable for admin login is not set, redirect to login page
-if (!isset($_SESSION['account_number'])) {
-    header("Location: ../landing-page.php");
-    exit();
-}
-
-?>
 
 <!DOCTYPE html>
 <html>
@@ -22,7 +11,6 @@ if (!isset($_SESSION['account_number'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
-        /* Content styles */
         #content {
             margin-left: 250px;
             padding: 20px;

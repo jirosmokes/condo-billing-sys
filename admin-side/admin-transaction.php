@@ -86,9 +86,8 @@ if (isset($_GET['room_number'])) {
             background-color: #202124;
             color: #fff;
             display: flex;
-            justify-content: center;
+            justify-content: right;
             align-items: center;
-            height: 100vh;
             margin: 0;
         }
 
@@ -99,6 +98,8 @@ if (isset($_GET['room_number'])) {
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 600px;
+            margin-top: 20px;
+            margin-right: 300px;
         }
 
         h2 {
@@ -140,12 +141,13 @@ if (isset($_GET['room_number'])) {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            font-size: 12px;
         }
 
         th, td {
             padding: 10px;
             border: 1px solid #5f6368;
-            text-align: left;
+            text-align: center;
         }
 
         th {
@@ -169,13 +171,8 @@ if (isset($_GET['room_number'])) {
     </style>
 </head>
 <body>
-<<<<<<<<< Temporary merge branch 1
-      <!-- SIDEBAR -->
-      <div class="sidebar">
-=========
 
      <div class="sidebar">
->>>>>>>>> Temporary merge branch 2
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
         <a href="../admin-side/admin-dashboard.php" class="active" onclick="showContent('dashboard')">
@@ -201,7 +198,7 @@ if (isset($_GET['room_number'])) {
         </form>
     </div>
     <div class="container">
-        <h2>Add Transaction</h2>
+        <center><h2>Add Transaction</h2></center>
         <form action="" method="POST">
             <div class="form-group">
                 <label for="roomnumber">Select Room:</label>
@@ -214,7 +211,7 @@ if (isset($_GET['room_number'])) {
             </div>
             <div class="form-group">
                 <label for="amount">Amount:</label>
-                <input type="text" id="amount" name="amount" required><br>
+                <input type="text" id="amount" name="amount" required placeholder="₱ 000.00"><br>
             </div>
             <div class="form-group">
                 <label for="startdate">Starting Date:</label>
@@ -232,10 +229,10 @@ if (isset($_GET['room_number'])) {
             <input type="submit" name="submit" value="Add Transaction">
         </form>
 
-        <h2>Transaction Details</h2>
+        <center><h2 style="margin-top: 20px;">Transaction Details</h2></center>
         <form action="" method="GET">
             <div class="form-group">
-                <label for="room_number">View Transactions for Room:</label>
+                <label for="room_number" style="margin-bottom: 20px;">View Transactions for Room:</label>
                 <select name="room_number" id="room_number" onchange="this.form.submit()">
                     <option value="">Select Room</option>
                     <?php foreach ($rooms as $room): ?>
