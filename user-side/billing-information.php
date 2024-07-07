@@ -154,24 +154,11 @@
     <p class="disclaimer">
         By providing your card information, you allow DORMHUB to charge your card for future payments.
         If the price changes, we'll notify you beforehand.
-        You can manage renewals anytime from <a href="#">My Account</a>.
+        You can manage renewals anytime from <a href="../user-side/user-view-profile.php">My Account</a>.
     </p>
 
     <?php
-    // Check if the form is submitted
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "dorm_hub_db";
-
-        // Create connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        // Check connection
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
+    require '../connection-db.php';
 
         // Validate and sanitize input data
         $payer_name = mysqli_real_escape_string($conn, $_POST['payer_name']);
