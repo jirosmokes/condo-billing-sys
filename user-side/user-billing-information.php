@@ -179,7 +179,7 @@
 
         // Close connection
         $conn->close();
-    }
+    
     ?>
 </div>
 
