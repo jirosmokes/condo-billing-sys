@@ -2,13 +2,13 @@
 session_start();
 require '../connection-db.php';
 
-// Check if user is logged in
+
 if (!isset($_SESSION['account_number'])) {
     header('Location: ../user-side/user-dashboard.php');
     exit;
 }
 
-// Fetch user data based on account_number
+
 $account_number = $_SESSION['account_number'];
 $room_number = $_SESSION['room_number'];
 $sql = "SELECT * FROM users WHERE account_number = ?";
@@ -26,15 +26,15 @@ if ($result->num_rows > 0) {
 
 $stmt->close();
 
-// Handle image upload
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profilePicture'])) {
     $uploadMessage = upload_image($account_number, $conn);
     echo "<script>alert('$uploadMessage');</script>";
-    header("Refresh:0"); // Refresh the page to show the updated image
-    exit; // Ensure script stops after refresh
+    header("Refresh:0");
+    exit; 
 }
 
-// Fetch billing logs based on room_number
+
 $billing_logs_sql = "SELECT due_date, amount, status FROM transactions WHERE room_number = ? ORDER BY due_date ASC";
 $stmt = $conn->prepare($billing_logs_sql);
 $stmt->bind_param("s", $room_number);
@@ -51,47 +51,65 @@ if ($billing_logs_result->num_rows > 0) {
 }
 
 $stmt->close();
+
+// Fetch payment transaction details
+$payment_transaction_sql = "SELECT payer_name, transaction_id, transaction_date FROM billing_information WHERE room_number = ? ORDER BY transaction_date ASC";
+$stmt = $conn->prepare($payment_transaction_sql);
+$stmt->bind_param("s", $room_number);
+$stmt->execute();
+$payment_transaction_result = $stmt->get_result();
+
+$payment_transactions = [];
+if ($payment_transaction_result->num_rows > 0) {
+    while ($row = $payment_transaction_result->fetch_assoc()) {
+        $payment_transactions[] = $row;
+    }
+} else {
+    $payment_transactions[] = ['NULL', 'NULL', 'NULL'];
+}
+
+$stmt->close();
 $conn->close();
 
 function upload_image($account_number, $conn) {
     if (isset($_FILES["profilePicture"]) && $_FILES["profilePicture"]["error"] == 0) {
-        $image = $_FILES["profilePicture"];
+        $profile_picture = $_FILES["profilePicture"];
         $target_dir = "../images/";
-        $target_file = $target_dir . basename($image["name"]);
+        $target_file = $target_dir . basename($profile_picture["name"]);
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
         
         // Check if file is an actual image
-        $check = getimagesize($image["tmp_name"]);
+        $check = getimagesize($profile_picture["tmp_name"]);
         if ($check === false) {
             return "File is not an image.";
         }
 
         // Check file size
-        if ($image["size"] > 500000) {
+        if ($profile_picture["size"] > 500000) {
             return "Sorry, your file is too large.";
         }
 
-        // Allow certain file formats
+       
         $allowedFormats = ["jpg", "jpeg", "png", "gif"];
         if (!in_array($imageFileType, $allowedFormats)) {
             return "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
         }
 
-        // Check if file already exists
+        
         if (file_exists($target_file)) {
             return "Sorry, file already exists.";
         }
 
         // Attempt to move the uploaded file
-        if (move_uploaded_file($image["tmp_name"], $target_file)) {
-            $imagePath = "images/" . basename($image["name"]);
-            $sql = "UPDATE users SET image = ? WHERE account_number = ?";
+        if (move_uploaded_file($profile_picture["tmp_name"], $target_file)) {
+            $imagePath = "images/" . basename($profile_picture["name"]);
+            $sql = "UPDATE users SET profile_picture = ? WHERE account_number = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("ss", $imagePath, $account_number);
             if ($stmt->execute()) {
                 $stmt->close();
-                return "The file " . htmlspecialchars(basename($image["name"])) . " has been uploaded.";
+                return "The file " . htmlspecialchars(basename($profile_picture["name"])) . " has been uploaded.";
             } else {
                 $stmt->close();
                 return "Sorry, there was an error updating your profile.";
@@ -140,7 +158,7 @@ function upload_image($account_number, $conn) {
     </div>
     <div class="card">
         <div class="header">
-            <div class="profile-pic" id="profile-pic" style="background-image: url('../<?php echo isset($user['image']) ? htmlspecialchars($user['image']) : ''; ?>');">
+            <div class="profile-pic" id="profile-pic" style="background-image: url('../<?php echo isset($user['profile_picture']) ? htmlspecialchars($user['profile_picture']) : ''; ?>');">
                 <form id="upload-form" action="" method="post" enctype="multipart/form-data">
                     <label for="file-upload" class="upload-label">Upload</label>
                     <input type="file" id="file-upload" name="profilePicture" accept="image/*" onchange="document.getElementById('upload-form').submit();">
@@ -151,37 +169,68 @@ function upload_image($account_number, $conn) {
                 <div class="left">
                     <div>Email: <?php echo htmlspecialchars($user['account_number']); ?></div>
                     <div>Contact No.: <?php echo htmlspecialchars($user['contact_number']); ?></div>
-                <!--/div>
-                <div class="right"-->
+                
                     <div>School: <?php echo htmlspecialchars($user['school']); ?></div>
                     <div>Room No.: <?php echo htmlspecialchars($user['room_number']); ?></div>
                     <div>Emergency No.: <?php echo htmlspecialchars($user['emergency_number']); ?></div>
                 </div>
             </div>
         </div>
-        <div class="table-container">
-            <h3>Billing Logs:</h3>
+        <h3>Billing Logs:</h3>
+        <div class="table-container scrollable-table">
             <table>
                 <thead>
                     <tr>
+                        <th>No.</th>
                         <th>Due Date</th>
                         <th>Amount</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                        foreach ($billing_logs as $log) {
-                            echo '<tr>';
-                            foreach ($log as $item) {
-                                echo '<td>' . htmlspecialchars($item) . '</td>';
-                            }
-                            echo '</tr>';
-                        }
-                    ?>
+                <?php
+                $counter = 1; // Initialize counter
+                foreach ($billing_logs as $log) {
+                    echo '<tr>';
+                    echo '<td style="width: 30px; text-align: center; padding: 5px;">' . $counter . '</td>'; // Display the counter with styling
+                    foreach ($log as $item) {
+                        echo '<td>' . htmlspecialchars($item) . '</td>';
+                    }
+                    echo '</tr>';
+                    $counter++; // Increment counter
+                }
+            ?>
+                </tbody>
+            </table>
+        </div>
+        <h3>Payment Transaction:</h3>
+        <div class="table-container scrollable-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Payer Name</th>
+                        <th>Transaction ID</th>
+                        <th>Date Paid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $counter = 1; // Initialize counter
+                foreach ($payment_transactions as $transaction) {
+                    echo '<tr>';
+                    echo '<td style="width: 30px; text-align: center; padding: 5px;">' . $counter . '</td>'; // Display the counter with styling
+                    foreach ($transaction as $item) {
+                        echo '<td>' . htmlspecialchars($item) . '</td>';
+                    }
+                    echo '</tr>';
+                    $counter++; // Increment counter
+                }
+                ?>
                 </tbody>
             </table>
         </div>
     </div>
 </body>
 </html>
+

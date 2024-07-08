@@ -93,24 +93,24 @@ body {
 }
 
 .name-group .form-group {
-	flex: 1; /* Distribute equal width among form groups */
+	flex: 1; 
 }
 
 .name-group .form-group input[type="text"] {
-	width: 100%; /* Make inputs take up full width */
+	width: 100%; 
 }
 
 .container form .form-group {
 	margin-bottom: 15px;
 	text-align: left;
 	display: flex;
-	align-items: center; /* Align items vertically */
+	align-items: center; 
 }
 
 .container form .form-group label {
-	flex-basis: 20%; /* Adjust label width */
-	margin-right: 10px; /* Space between label and input */
-	color: #ccc; /* Label color */
+	flex-basis: 20%; 
+	margin-right: 10px; 
+	color: #ccc; 
 	font-size: 15px;
 }
 .message{

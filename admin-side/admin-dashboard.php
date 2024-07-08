@@ -1,14 +1,3 @@
-<?php
-// Start session if it's not already started
-session_start();
-
-// Check if session variable for admin login is not set, redirect to login page
-if (!isset($_SESSION['account_number'])) {
-    header("Location: ../landing-page.php");
-    exit();
-}
-
-?>
 
 <!DOCTYPE html>
 <html>

@@ -8,9 +8,9 @@ function displayRoomStatus($conn, $room_number) {
     $result = $conn->query($check_existing_sql);
 
     if ($result->num_rows > 0) {
-        echo '<i class="fa-solid fa-lock"></i>';
+        echo '<i class="fa-solid fa-door-closed" style="font-size: 2em"></i>';
     } else {
-        echo '<i class="fa-solid fa-unlock-keyhole"></i>';
+        echo '<i class="fa-solid fa-door-open" style="font-size: 2em"></i>';
     }
 }
 
@@ -45,7 +45,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php require 'admin-room-details.php'; ?>
 
     <style>
-        /* Content styles */
         #content {
             margin-left: 250px;
             padding: 20px;
@@ -60,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
 </head>
 <body>
-    <!-- SIDEBAR -->
+  
     <div class="sidebar">
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
@@ -86,24 +85,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </button>
         </form>
     </div>
-    <!-- SIDEBAR -->
-    <form method="post">
-        <div class="buttons">
-            <button type="submit" name="add"><i class="fa-solid fa-user-plus"></i></button>
-            <button type="submit" name="update"><i class="fa-solid fa-user-pen"></i></button>
-            <button type="submit" name="delete"><i class="fa-solid fa-user-minus"></i></button>
-        </div>
-    </form>
-    <div class="container">
-        <?php foreach($rooms as $room): ?>
-            <div class="room-container">
-                <div class="room-content">
-                    <h2><?php echo $room['room_number']; ?></h2>
-                    <p>Capacity: <?php echo $room['room_capacity']; ?></p>
-                    <?php displayRoomStatus($conn, $room['room_number']); ?>
-                </div>
+    <!-- <div class="contents"> -->
+        <form method="post">
+            <div class="buttons">
+                <button type="submit" name="add"><i class="fa-solid fa-user-plus"></i></button>
+                <button type="submit" name="update"><i class="fa-solid fa-user-pen"></i></button>
+                <button type="submit" name="delete"><i class="fa-solid fa-user-minus"></i></button>
             </div>
-        <?php endforeach; ?>
-    </div>
+        </form>
+        <div class="container">
+            <?php foreach($rooms as $room): ?>
+                <div class="room-container">
+                    <div class="room-content">
+                        <h2><?php echo $room['room_number']; ?></h2>
+                        <p>Capacity: <?php echo $room['room_capacity']; ?></p>
+                        <?php displayRoomStatus($conn, $room['room_number']); ?>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+    <!-- </div>  -->
+
 </body>
-</html>
+        </html>

@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $account = $result->fetch_assoc();
         
         if ($account) {
-            // Verify the password
+            
             if ($password == $account["account_password"]) {
                 $_SESSION['account_number'] = $account['account_number'];
                 $_SESSION['room_number'] = $account['room_number'];
