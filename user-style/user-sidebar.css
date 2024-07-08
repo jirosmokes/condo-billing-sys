@@ -1,0 +1,171 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:600|Open+Sans:600&display=swap");
+* {
+	margin: 0;
+	padding: 0;
+	text-decoration: none;
+}
+
+body {
+	margin: 0;
+	font-family: "Arial";
+	background-color: #1e1e1e;
+}
+
+.sidebar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 250px;
+	height: 100%;
+	background: linear-gradient(145deg, #1e1e1e, #2c2c2c);
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+	transition: all 0.3s;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.sidebar header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 70px;
+	background: #222;
+	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar a {
+	display: flex;
+	align-items: center;
+	padding: 15px 30px;
+	color: white;
+	transition: background-color 0.3s, transform 0.3s;
+}
+
+.sidebar a:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+	transform: translateX(5px);
+}
+
+.sidebar a.active {
+	background-color: #575757;
+}
+
+.sidebar a i {
+	margin-right: 10px;
+}
+
+.sidebar form {
+	margin-top: auto;
+}
+
+.sidebar form button {
+	background: none;
+	border: none;
+	color: white;
+	cursor: pointer;
+	display: block;
+	font-family: "Open Sans", sans-serif;
+	font-size: 16px;
+	line-height: 65px;
+	padding-left: 30px;
+	text-align: left;
+	transition: all 0.3s ease;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.sidebar form button:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar form button i {
+	margin-right: 10px;
+}
+
+.sidebar form button span {
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+a.active,
+a:hover {
+	border-left: 5px solid rgb(170, 254, 2);
+	color: rgb(170, 254, 2);
+}
+.sidebar a i {
+	font-size: 23px;
+	margin-right: 16px;
+}
+.sidebar a span {
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+#check {
+	display: none;
+}
+label #btn,
+label #cancel {
+	position: absolute;
+	cursor: pointer;
+	color: white;
+	border-radius: 5px;
+	border: 1px solid #262626;
+	margin: 15px 30px;
+	font-size: 29px;
+	background: #262626;
+	height: 45px;
+	width: 45px;
+	text-align: center;
+	line-height: 45px;
+	transition: all 0.5s ease;
+}
+label #cancel {
+	opacity: 0;
+	visibility: hidden;
+}
+#check:checked ~ .sidebar {
+	left: 0;
+}
+#check:checked ~ label #btn {
+	margin-left: 245px;
+	opacity: 0;
+	visibility: hidden;
+}
+#check:checked ~ label #cancel {
+	margin-left: 245px;
+	opacity: 1;
+	visibility: visible;
+}
+@media (max-width: 860px) {
+	.sidebar {
+		height: auto;
+		width: 70px;
+		left: 0;
+		margin: 100px 0;
+	}
+	header,
+	#btn,
+	#cancel {
+		display: none;
+	}
+	span {
+		position: absolute;
+		margin-left: 23px;
+		opacity: 0;
+		visibility: hidden;
+	}
+	.sidebar a {
+		height: 60px;
+	}
+	.sidebar a i {
+		margin-left: -10px;
+	}
+	a:hover {
+		width: 200px;
+		background: inherit;
+	}
+	.sidebar a:hover span {
+		opacity: 1;
+		visibility: visible;
+	}
+}
