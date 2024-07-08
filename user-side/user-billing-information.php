@@ -8,23 +8,20 @@ if (empty($_SESSION['account_number'])) {
 
 require '../connection-db.php';
 
-// Fetch distinct room numbers from the users table
 $rooms_result = mysqli_query($conn, "SELECT room_number FROM users WHERE access_lvl = 'user'");
 $rooms = [];
 while ($row = mysqli_fetch_assoc($rooms_result)) {
-    $rooms[] = $row['room_number']; // Store only the room_number in the array
+    $rooms[] = $row['room_number']; 
 }
 
 $transactions = [];
 $selected_account_number = mysqli_real_escape_string($conn, $_SESSION['account_number']);
 
-// Fetch all transactions for the selected account into an array
 $transactions_result = mysqli_query($conn, "SELECT * FROM transactions WHERE account_number = '$selected_account_number'");
 while ($row = mysqli_fetch_assoc($transactions_result)) {
-    $transactions[$row['id']] = $row; // Store transaction details with ID as the key
+    $transactions[$row['id']] = $row; 
 }
 
-// Initialize message variables
 $message = '';
 $error = '';
 
@@ -42,21 +39,21 @@ if (isset($_POST['submit'])) {
         if ($transaction['account_number'] != $selected_account_number) {
             $error = "You cannot pay bills for a different account.";
         } else {
-            // Retrieve amount from array for validation
+
             $amount_in_db = $transaction['amount'];
 
-            // Validate if the paid amount matches the amount in database
+
             if ($amount_paid == $amount_in_db) {
-                // Update transaction status to "paid"
+
                 $update_query = "UPDATE transactions SET status = 'PAID' WHERE id = '$bill_id'";
                 if (mysqli_query($conn, $update_query)) {
-                    // Success message
+
                     $message = "Payment successful! Transaction ID: $bill_id";
 
-                    // Update the local transaction array to reflect the status change
+
                     $transactions[$bill_id]['status'] = 'PAID';
 
-                    // Optionally, proceed to the next bill in sequence
+
                     $next_bill_id = getNextUnpaidBillId($transactions, $bill_id, $selected_account_number);
                     if ($next_bill_id !== null) {
                         $update_next_query = "UPDATE transactions SET status = 'PENDING' WHERE id = '$next_bill_id'";
@@ -70,7 +67,7 @@ if (isset($_POST['submit'])) {
                         $message .= "<br>No more unpaid bills for this account.";
                     }
 
-                    // Insert payment information into billing_information table
+
                     $room_number = $_SESSION['room_number'];
                     $sql = "INSERT INTO billing_information (account_number, room_number, card_number, country, amount, transaction_date, payer_name)
                             VALUES ('$selected_account_number', '$room_number', '$card_number', '$country', '$amount_paid', current_timestamp(), '$payer_name')";
@@ -89,12 +86,12 @@ if (isset($_POST['submit'])) {
         $error = "Bill not found or does not belong to this account.";
     }
 
-    // Redirect to avoid form resubmission
+
     header("Location: " . $_SERVER['REQUEST_URI']);
     exit();
 }
 
-// Function to get the ID of the next unpaid bill from array
+
 function getNextUnpaidBillId($transactions, $current_bill_id, $account_number)
 {
     $found_current = false;

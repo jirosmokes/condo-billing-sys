@@ -3,7 +3,7 @@ session_start();
 require '../connection-db.php';
 
 
-if (!isset($_SESSION['account_number'])) {
+if (empty($_SESSION['account_number'])) {
     header('Location: ../user-side/user-dashboard.php');
     exit;
 }
