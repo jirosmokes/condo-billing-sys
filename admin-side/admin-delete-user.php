@@ -1,9 +1,13 @@
 <?php
 require '../connection-db.php'; 
 include 'admin-room-details.php'; 
-
+session_start();
+if (empty($_SESSION['account_number'])) {
+    header("Location: ../landing-page.php");
+    exit();
+}
 $rooms = [];
-$sql = "SELECT room_number FROM users";
+$sql = "SELECT room_number FROM users WHERE access_lvl = 'user'";
 $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
@@ -18,9 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     $delete_sql = "DELETE FROM users WHERE room_number = '$roomnumber'";
     if ($conn->query($delete_sql) === TRUE) {
         $message = "Record deleted successfully";
-        
+        // Refresh the rooms list after deletion
         $rooms = [];
-        $sql = "SELECT room_number FROM users";
+        $sql = "SELECT room_number FROM users WHERE status = 'user'";
         $result = $conn->query($sql);
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {

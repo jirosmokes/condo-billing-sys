@@ -35,9 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profilePicture'])) {
 }
 
 
-$billing_logs_sql = "SELECT due_date, amount, status FROM transactions WHERE room_number = ? ORDER BY due_date ASC";
+$billing_logs_sql = "SELECT due_date, amount, status FROM transactions WHERE account_number = ? ORDER BY due_date ASC";
 $stmt = $conn->prepare($billing_logs_sql);
-$stmt->bind_param("s", $room_number);
+$stmt->bind_param("s", $account_number);
 $stmt->execute();
 $billing_logs_result = $stmt->get_result();
 
@@ -47,13 +47,13 @@ if ($billing_logs_result->num_rows > 0) {
         $billing_logs[] = $row;
     }
 } else {
-    $billing_logs[] = ['NULL', 'NULL', 'NULL'];
+    $billing_logs[] = ['No data', 'No data', 'No data'];
 }
 
 $stmt->close();
 
 // Fetch payment transaction details
-$payment_transaction_sql = "SELECT payer_name, transaction_id, transaction_date FROM billing_information WHERE room_number = ? ORDER BY transaction_date ASC";
+$payment_transaction_sql = "SELECT payer_name, transaction_date, card_number FROM billing_information WHERE room_number = ? ORDER BY transaction_date ASC";
 $stmt = $conn->prepare($payment_transaction_sql);
 $stmt->bind_param("s", $room_number);
 $stmt->execute();
@@ -65,7 +65,7 @@ if ($payment_transaction_result->num_rows > 0) {
         $payment_transactions[] = $row;
     }
 } else {
-    $payment_transactions[] = ['NULL', 'NULL', 'NULL'];
+    $payment_transactions[] = ['No data', 'No data', 'No Data'];
 }
 
 $stmt->close();
@@ -128,10 +128,11 @@ function upload_image($account_number, $conn) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../user-style/user-view-profile.css">
+    <link rel="stylesheet" href="../user-style/user-view-profile.css?v=<?php echo time(); ?>">>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
     <link rel="stylesheet" href="../admin-style/admin-sidebar.css?v=<?php echo time(); ?>">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" href="../images/dorm-hub-logo-official-2.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Profile View</title>
 </head>
 <body>
@@ -210,8 +211,8 @@ function upload_image($account_number, $conn) {
                     <tr>
                         <th>No.</th>
                         <th>Payer Name</th>
-                        <th>Transaction ID</th>
                         <th>Date Paid</th>
+                        <th>Card Number</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -219,9 +220,9 @@ function upload_image($account_number, $conn) {
                 $counter = 1; // Initialize counter
                 foreach ($payment_transactions as $transaction) {
                     echo '<tr>';
-                    echo '<td style="width: 30px; text-align: center; padding: 5px;">' . $counter . '</td>'; // Display the counter with styling
+                    echo '<td style="width: 30px; text-align: center; padding: 5px;">' . $counter . '</td>'; 
                     foreach ($transaction as $item) {
-                        echo '<td>' . htmlspecialchars($item) . '</td>';
+                        echo '<td style="text-align:center;">' . htmlspecialchars($item) . '</td>';
                     }
                     echo '</tr>';
                     $counter++; // Increment counter

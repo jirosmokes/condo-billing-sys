@@ -1,6 +1,15 @@
+<?php
+session_start();
+if (empty($_SESSION['account_number'])) {
+    header("Location: ../landing-page.php");
+    exit();
+}
+
+?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,14 +28,16 @@
 
         body {
             margin: 0;
-            font-family: ""Open Sans", sans-serif";
+            font-family: "" Open Sans", sans-serif";
             background-color: #1e1e1e;
         }
     </style>
 </head>
+
 <body>
     <div id="content">
         <?php include 'admin-dbContent.php'; ?>
     </div>
 </body>
+
 </html>

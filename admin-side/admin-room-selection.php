@@ -1,6 +1,11 @@
 <?php
 require '../connection-db.php';
 
+session_start();
+if (empty($_SESSION['account_number'])) {
+    header("Location: ../landing-page.php");
+    exit();
+}
 function displayRoomStatus($conn, $room_number) {
     $room_number = mysqli_real_escape_string($conn, $room_number);
 
