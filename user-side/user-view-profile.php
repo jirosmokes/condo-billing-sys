@@ -10,7 +10,7 @@ if (empty($_SESSION['account_number'])) {
 
 
 $account_number = $_SESSION['account_number'];
-$room_number = $_SESSION['room_number'];
+//      
 $sql = "SELECT * FROM users WHERE account_number = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $account_number);
@@ -53,9 +53,9 @@ if ($billing_logs_result->num_rows > 0) {
 $stmt->close();
 
 // Fetch payment transaction details
-$payment_transaction_sql = "SELECT payer_name, transaction_date, card_number FROM billing_information WHERE room_number = ? ORDER BY transaction_date ASC";
+$payment_transaction_sql = "SELECT payer_name, transaction_date, card_number FROM billing_information WHERE account_number = ? ORDER BY transaction_date ASC";
 $stmt = $conn->prepare($payment_transaction_sql);
-$stmt->bind_param("s", $room_number);
+$stmt->bind_param("s", $account_number);
 $stmt->execute();
 $payment_transaction_result = $stmt->get_result();
 

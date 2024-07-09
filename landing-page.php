@@ -14,56 +14,47 @@ if (isset($_COOKIE['password'])) {
     $passwordCookie = "";
 }
 
-if(isset($_POST['help-center'])) {
-    header('Location: help-center.php');
-    exit();
-}
+// Handle form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+    $accountNumber = $_POST['account-number'];
+    $password = $_POST['password'];
 
-$password_confirm = false;
-$error = "";
-if ($_SERVER["REQUEST_METHOD"] == "POST"){
-    if(isset($_POST['submit'])) {
-        $accountNumber = $_POST['account-number'];
-        $password = $_POST['password'];
+    $stmt = $conn->prepare("SELECT * FROM users WHERE account_number = ?");
+    $stmt->bind_param("s", $accountNumber);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $account = $result->fetch_assoc();
+    
+    if ($account) {
+        if ($password == $account["account_password"]) {
+            $_SESSION['account_number'] = $account['account_number'];
+            $_SESSION['room_number'] = $account['room_number'];
 
-        $stmt = $conn->prepare("SELECT * FROM users WHERE account_number = ?");
-        $stmt->bind_param("s", $accountNumber);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $account = $result->fetch_assoc();
-        
-        if ($account) {
-            if ($password == $account["account_password"]) {
-                $_SESSION['account_number'] = $account['account_number'];
-                $_SESSION['room_number'] = $account['room_number'];
-
-                if (isset($_POST['rememberme'])) {
-                    setcookie('account-number', $accountNumber, time() + (86400 * 30), "/");
-                    setcookie('password', $password, time() + (86400 * 30), "/");
-                } else {
-                    setcookie('account-number', '', time() - 3600, "/");
-                    setcookie('password', '', time() - 3600, "/");
-                }
-                if($account['access_lvl'] == "user") {
-                    header("Location: user-side/user-dashboard.php");
-                    exit();
-                } else {
-                    header("Location: admin-side/admin-dashboard.php");
-                    exit();
-                }
+            if (isset($_POST['rememberme'])) {
+                setcookie('account-number', $accountNumber, time() + (86400 * 30), "/");
+                setcookie('password', $password, time() + (86400 * 30), "/");
             } else {
-                $error = "Wrong password";
-                $password_confirm = true;
+                setcookie('account-number', '', time() - 3600, "/");
+                setcookie('password', '', time() - 3600, "/");
+            }
+            if ($account['access_lvl'] == "user") {
+                header("Location: user-side/user-dashboard.php");
+                exit();
+            } else {
+                header("Location: admin-side/admin-dashboard.php");
+                exit();
             }
         } else {
-            $error = "User not registered";
-            $password_confirm = true;
+            $error = "Wrong password";
         }
-
-        $stmt->close();
+    } else {
+        $error = "User not registered";
     }
+
+    $stmt->close();
 }
-$conn->close();
+
+// Close the database connection (moved to the end of the script)
 ?>
 
 <!DOCTYPE html>
@@ -92,12 +83,12 @@ $conn->close();
             <h1>Hi Tenant!</h1>
             <p class="welcome-text">Welcome to DormHub, your trusted platform for managing bills and payments. We're here to ensure your billing experience is smooth and hassle-free.</p>
             <div class="inside-container">
-                <?php if($password_confirm): ?>
+                <?php if(isset($error)): ?>
                     <div class="error">
                         <p><?php echo $error ?></p>
                     </div>
                 <?php endif; ?>
-                <form class="login-form" action="" method="POST">
+                <form class="login-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
                     <div class="form-group">
                         <input type="text" id="account-number" name="account-number" placeholder="Account Number" required value="<?php echo $accountNumberCookie ?>">
                     </div>
