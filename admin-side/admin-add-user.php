@@ -2,6 +2,12 @@
 require '../connection-db.php';
 include 'admin-room-details.php';
 
+session_start();
+if (empty($_SESSION['account_number'])) {
+    header("Location: ../landing-page.php");
+    exit();
+}
+
 $new_user_validation = false;
 $new_user_msg = "";
 if (isset($_POST["submit-add"])) {

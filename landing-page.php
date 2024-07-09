@@ -14,6 +14,11 @@ if (isset($_COOKIE['password'])) {
     $passwordCookie = "";
 }
 
+if(isset($_POST['help-center'])) {
+    header('Location: help-center.php');
+    exit();
+}
+
 $password_confirm = false;
 $error = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -28,7 +33,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $account = $result->fetch_assoc();
         
         if ($account) {
-            
             if ($password == $account["account_password"]) {
                 $_SESSION['account_number'] = $account['account_number'];
                 $_SESSION['room_number'] = $account['room_number'];
@@ -76,10 +80,12 @@ $conn->close();
     <header>
         <img src="images/dorm-hub-logo-official.png" alt="DormHub Logo" class="logo">
         <nav>
-            <a href="#">About</a>
+            <a href="about.php">About</a>
             <a href="rooms.php">Rooms</a>
         </nav>
-        <button class="help-center">Help Center</button>
+        <div class="help-center">
+            <a href="help-center.php">Help Center</a>
+        </div>
     </header>
     <main>
         <div class="content">

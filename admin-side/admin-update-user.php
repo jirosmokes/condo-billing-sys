@@ -2,6 +2,11 @@
 require '../connection-db.php'; 
 include 'admin-room-details.php'; 
 
+session_start();
+if (empty($_SESSION['account_number'])) {
+    header("Location: ../landing-page.php");
+    exit();
+}
 
 if (isset($_POST['search'])) {
     $roomnumber = $_POST['roomnumber'];

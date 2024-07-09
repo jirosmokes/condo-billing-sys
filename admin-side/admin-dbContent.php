@@ -12,6 +12,11 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+if (empty($_SESSION['account_number'])) {
+    header("Location: ../landing-page.php");
+    exit();
+}
+
 $sql = "SELECT COUNT(*) AS total_tenants FROM users";
 $result = $conn->query($sql);
 
@@ -121,7 +126,7 @@ $resultPaidTransactions = $conn->query($sqlPaidTransactions);
        
         <section id="totalTenants" style="display: inline-block; width: 100%; padding: 15px; border-radius: 10px; background-color: #333; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);">
             <h2 style="color: white; font-size: 20px; margin-bottom: 8px; text-align: center;">Total Registered Tenants</h2>
-            <p style="color: rgb(170, 254, 2); font-size: 24px; font-weight: bolder; line-height: 1.4; margin: 0; text-align: center;"><?php echo "Total: " . $totalTenants; ?></p>
+            <p style="color: rgb(170, 254, 2); font-size: 24px; font-weight: bolder; line-height: 1.4; margin: 0; text-align: center;"><?php echo "Total: " . $totalTenants - 4; ?></p>
 
            
             <section id="tenantDetails" style="margin-top: 20px; text-align: center;">

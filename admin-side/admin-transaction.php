@@ -1,6 +1,11 @@
 <?php 
 require '../connection-db.php';
 
+session_start(); 
+if (empty($_SESSION['account_number'])) {
+    header("Location: ../landing-page.php");
+    exit();
+}
 
 $rooms_result = mysqli_query($conn, "SELECT room_number FROM users WHERE access_lvl = 'user'");
 $rooms = [];
@@ -10,11 +15,8 @@ while ($row = mysqli_fetch_assoc($rooms_result)) {
 
 $errors = [];
 
-
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(isset($_POST['submit'])) {
-      
         $room_number = mysqli_real_escape_string($conn, $_POST['roomnumber']);
         $amount = mysqli_real_escape_string($conn, $_POST['amount']);
         $description = mysqli_real_escape_string($conn, $_POST['description']);
@@ -22,7 +24,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $duedate = ($_POST['duedate'] != '') ? mysqli_real_escape_string($conn, $_POST['duedate']) : '1970-01-01';
         $status = "pending";
 
-       
+        // Fetch account_number based on room_number
+        $stmt = mysqli_prepare($conn, "SELECT account_number FROM users WHERE room_number = ? LIMIT 1");
+        mysqli_stmt_bind_param($stmt, "s", $room_number);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_bind_result($stmt, $account_number);
+        mysqli_stmt_fetch($stmt);
+        mysqli_stmt_close($stmt);
+
+        if (empty($account_number)) {
+            $errors[] = "Account number not found for the selected room.";
+        }
+
         if (empty($room_number)) {
             $errors[] = "Room number is required.";
         }
@@ -38,14 +51,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $errors[] = "Invalid status value.";
         }
 
-       
         if (empty($errors)) {
-            
-            $insert_query = "INSERT INTO transactions (room_number, amount, description, start_date, due_date, status) 
-                            VALUES ('$room_number', '$amount', '$description', '$startdate', '$duedate', '$status')";
+            $insert_query = "INSERT INTO transactions (account_number, room_number, amount, description, start_date, due_date, status) 
+                            VALUES ('$account_number', '$room_number', '$amount', '$description', '$startdate', '$duedate', '$status')";
             
             if (mysqli_query($conn, $insert_query)) {
-               
                 header("Location: " . $_SERVER['PHP_SELF']);
                 exit();
             } else {
@@ -59,9 +69,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-
-
-
 $transactions = [];
 if (isset($_GET['room_number'])) {
     $selected_room_number = mysqli_real_escape_string($conn, $_GET['room_number']);
@@ -72,6 +79,7 @@ if (isset($_GET['room_number'])) {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,10 +88,11 @@ if (isset($_GET['room_number'])) {
     <title>Add Transaction</title>
     <link rel="stylesheet" href="../admin-style/admin-sidebar.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" href="../images/dorm-hub-logo-official-2.png" type="image/png">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #202124;
+            background-color: rgb(24, 25, 26);
             color: #fff;
             display: flex;
             justify-content: right;
@@ -92,14 +101,14 @@ if (isset($_GET['room_number'])) {
         }
 
         .container {
-            background-color: #2b2c30;
+            background-color: #333;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 600px;
             margin-top: 20px;
-            margin-right: 300px;
+            margin-right: 350px;
         }
 
         h2 {
@@ -122,7 +131,7 @@ if (isset($_GET['room_number'])) {
             padding: 10px;
             border: 1px solid #5f6368;
             border-radius: 5px;
-            background-color: #38393d;
+            background-color: #333;
             color: #fff;
             box-sizing: border-box; 
         }
@@ -151,16 +160,15 @@ if (isset($_GET['room_number'])) {
         }
 
         th {
-            background-color: #38393d;
-            color: #fff;
+            background-color: #444;
         }
 
         tbody tr:nth-child(even) {
-            background-color: #38393d;
+            background-color: #333;
         }
 
         tbody tr:nth-child(odd) {
-            background-color: #2b2c30;
+            background-color: #333;
         }
 
         p {
