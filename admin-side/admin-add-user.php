@@ -8,8 +8,9 @@ if (empty($_SESSION['account_number'])) {
     exit();
 }
 
-$new_user_validation = false;
+
 $new_user_msg = "";
+$error_msg = "";
 if (isset($_POST["submit-add"])) {
     $account_number = $_POST["accountnumber"];
     $room_number = $_POST["roomnumber"];
@@ -17,8 +18,7 @@ if (isset($_POST["submit-add"])) {
     $duplicate = mysqli_query($conn, "SELECT * FROM users WHERE account_number = '$account_number' OR room_number = '$room_number'");
 
     if (mysqli_num_rows($duplicate) > 0) {
-        $new_user_validation = true;
-        $new_user_msg = "User already exists or room already taken.";
+        $error_msg = "User already exists or room already taken.";
     } else {
         $check_existing_sql = "SELECT * FROM users WHERE account_number = '$account_number' AND room_number = '$room_number'";
         $result = $conn->query($check_existing_sql);
@@ -27,29 +27,33 @@ if (isset($_POST["submit-add"])) {
             $middlename = $_POST["middlename"];
             $lastname = $_POST["lastname"];
             $password = $_POST["password"];
+            $confirm_password = $_POST['confirm_password'];
             $school = $_POST['school'];
             $contactnumber = $_POST["contact_number"];
             $emergencynumber = $_POST["emergency_number"];
-            $access_lvl = "user"; 
+            $access_lvl = "user";
 
-            $stmt = $conn->prepare("INSERT INTO users (account_number, account_password, first_name, middle_name, last_name, school, contact_number, emergency_number, room_number, access_lvl) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssssssssss", $account_number, $password, $firstname, $middlename, $lastname, $school, $contactnumber, $emergencynumber, $room_number, $access_lvl);
+            if ($password == $confirm_password) {
+                $stmt = $conn->prepare("INSERT INTO users (account_number, account_password, first_name, middle_name, last_name, school, contact_number, emergency_number, room_number, access_lvl) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssssssssss", $account_number, $password, $firstname, $middlename, $lastname, $school, $contactnumber, $emergencynumber, $room_number, $access_lvl);
 
-            if ($stmt->execute()) {
-                $new_user_validation = true;
-                $new_user_msg = "New user added successfully to Room $room_number.";
-            } else {
-                echo "Error: " . $stmt->error;
+                if ($stmt->execute()) {
+                    $new_user_msg = "New user added successfully to Room $room_number.";
+                } else {
+                    echo "Error: " . $stmt->error;
+                }
+            }else {
+                $error_msg= "Password and confirm password does not match";
             }
         } else {
-            $new_user_validation = false;
-            $new_user_msg = "User with account number $account_number already exists in Room $room_number.";
+            $error_msg = "User with account number $account_number already exists in Room $room_number.";
         }
     }
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,21 +62,27 @@ if (isset($_POST["submit-add"])) {
     <link rel="icon" href="../images/dorm-hub-logo-official-2.png" type="image/png">
     <title>ADD USER</title>
 </head>
+
 <body>
     <div class="container">
         <h2>Add User</h2>
         <a href="../admin-side/admin-room-selection.php"><i class="fa-solid fa-arrow-left"></i></a>
-            <?php if($new_user_validation): ?>
-                <div class="message">
-                    <p><?php echo $new_user_msg ?></p>
-                </div>
-            <?php endif; ?>
+        <?php if (!empty($new_user_msg)) : ?>
+            <div class="message">
+                <p><?php echo $new_user_msg ?></p>
+            </div>
+        <?php endif; ?>
+        <?php if (!empty($error_msg)) : ?>
+            <div class="error">
+                <p><?php echo $error_msg ?></p>
+            </div>
+        <?php endif; ?>
         <hr>
         <form action="" method="post">
             <div class="form-group">
                 <select name="roomnumber" id="roomnumber" required>
                     <option value="">Select Room</option>
-                    <?php foreach ($rooms as $room): ?>
+                    <?php foreach ($rooms as $room) : ?>
                         <option value="<?php echo $room['room_number']; ?>"><?php echo $room['room_number']; ?></option>
                     <?php endforeach; ?>
                 </select>
@@ -110,4 +120,5 @@ if (isset($_POST["submit-add"])) {
         </form>
     </div>
 </body>
+
 </html>

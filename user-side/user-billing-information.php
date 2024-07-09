@@ -11,7 +11,7 @@ require '../connection-db.php';
 $rooms_result = mysqli_query($conn, "SELECT room_number FROM users WHERE access_lvl = 'user'");
 $rooms = [];
 while ($row = mysqli_fetch_assoc($rooms_result)) {
-    $rooms[] = $row['room_number']; 
+    $rooms[] = $row['room_number'];
 }
 
 $transactions = [];
@@ -19,11 +19,12 @@ $selected_account_number = mysqli_real_escape_string($conn, $_SESSION['account_n
 
 $transactions_result = mysqli_query($conn, "SELECT * FROM transactions WHERE account_number = '$selected_account_number'");
 while ($row = mysqli_fetch_assoc($transactions_result)) {
-    $transactions[$row['id']] = $row; 
+    $transactions[$row['id']] = $row;
 }
 
-$message = '';
-$error = '';
+$message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
+$error = isset($_SESSION['error']) ? $_SESSION['error'] : '';
+unset($_SESSION['message'], $_SESSION['error']);
 
 // Handle form submission
 if (isset($_POST['submit'])) {
@@ -37,60 +38,54 @@ if (isset($_POST['submit'])) {
     if (isset($transactions[$bill_id])) {
         $transaction = $transactions[$bill_id];
         if ($transaction['account_number'] != $selected_account_number) {
-            $error = "You cannot pay bills for a different account.";
+            $_SESSION['error'] = "You cannot pay bills for a different account.";
         } else {
-
             $amount_in_db = $transaction['amount'];
 
-
-            if ($amount_paid == $amount_in_db) {
-
+            if ($amount_paid > $amount_in_db) {
+                $_SESSION['error'] = "Please enter excact amount. Please try again.";
+            } elseif ($amount_paid < $amount_in_db) {
+                $_SESSION['error'] = "Amount inefficient. Please try again.";
+            } elseif ($amount_paid == $amount_in_db) {
                 $update_query = "UPDATE transactions SET status = 'PAID' WHERE id = '$bill_id'";
                 if (mysqli_query($conn, $update_query)) {
-
-                    $message = "Payment successful! Transaction ID: $bill_id";
-
-
+                    $_SESSION['message'] = "Payment successful! Transaction ID: $bill_id";
                     $transactions[$bill_id]['status'] = 'PAID';
-
 
                     $next_bill_id = getNextUnpaidBillId($transactions, $bill_id, $selected_account_number);
                     if ($next_bill_id !== null) {
                         $update_next_query = "UPDATE transactions SET status = 'PENDING' WHERE id = '$next_bill_id'";
                         if (mysqli_query($conn, $update_next_query)) {
                             $transactions[$next_bill_id]['status'] = 'PENDING';
-                            $message .= "<br>Next bill (ID: $next_bill_id) is now ready for payment.";
+                            $_SESSION['message'] .= "<br>Next bill (ID: $next_bill_id) is now ready for payment.";
                         } else {
-                            $error = "Failed to update next bill status. Please try again.";
+                            $_SESSION['error'] = "Failed to update next bill status. Please try again.";
                         }
                     } else {
-                        $message .= "<br>No more unpaid bills for this account.";
+                        $_SESSION['message'] .= "<br>No more unpaid bills for this account.";
                     }
-
 
                     $room_number = $_SESSION['room_number'];
                     $sql = "INSERT INTO billing_information (account_number, room_number, card_number, country, amount, transaction_date, payer_name)
                             VALUES ('$selected_account_number', '$room_number', '$card_number', '$country', '$amount_paid', current_timestamp(), '$payer_name')";
 
                     if (!mysqli_query($conn, $sql)) {
-                        $error = "Error: " . $sql . "<br>" . mysqli_error($conn);
+                        $_SESSION['error'] = "Error: " . $sql . "<br>" . mysqli_error($conn);
                     }
                 } else {
-                    $error = "Failed to update transaction status. Please try again.";
+                    $_SESSION['error'] = "Failed to update transaction status. Please try again.";
                 }
             } else {
-                $error = "Paid amount does not match the amount in database. Please verify and try again.";
+                $_SESSION['error'] = "Please enter excact amount. Please try again.";
             }
         }
     } else {
-        $error = "Bill not found or does not belong to this account.";
+        $_SESSION['error'] = "Bill not found or does not belong to this account.";
     }
-
 
     header("Location: " . $_SERVER['REQUEST_URI']);
     exit();
 }
-
 
 function getNextUnpaidBillId($transactions, $current_bill_id, $account_number)
 {
@@ -111,10 +106,9 @@ function getNextUnpaidBillId($transactions, $current_bill_id, $account_number)
 $conn->close();
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -305,10 +299,6 @@ $conn->close();
 
         .message {
             width: 100%;
-        }
-
-        .message {
-            width: 100%;
             background-color: #fff;
             background: rgb(170, 254, 2);
             margin-bottom: 10px;
@@ -324,7 +314,7 @@ $conn->close();
             margin-bottom: 10px;
             padding: 5px;
             border-radius: 3px;
-            color: black;
+            color: white;
         }
     </style>
 </head>
@@ -355,14 +345,14 @@ $conn->close();
         </form>
     </div>
 
-    <?php if (!empty($message)) : ?>
+    <div class="container">
+        <h2>Transaction History</h2>
+        <?php if (!empty($message)) : ?>
             <p class="message"><?php echo $message; ?></p>
         <?php endif; ?>
         <?php if (!empty($error)) : ?>
             <p class="error"><?php echo $error; ?></p>
         <?php endif; ?>
-    <div class="container">
-        <h2>Transaction History</h2>
         <table>
             <tr>
                 <th>ID</th>

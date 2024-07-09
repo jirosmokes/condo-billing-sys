@@ -14,6 +14,7 @@ while ($row = mysqli_fetch_assoc($rooms_result)) {
 }
 
 $errors = [];
+$msg = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(isset($_POST['submit'])) {
@@ -24,7 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $duedate = ($_POST['duedate'] != '') ? mysqli_real_escape_string($conn, $_POST['duedate']) : '1970-01-01';
         $status = "pending";
 
-        // Fetch account_number based on room_number
         $stmt = mysqli_prepare($conn, "SELECT account_number FROM users WHERE room_number = ? LIMIT 1");
         mysqli_stmt_bind_param($stmt, "s", $room_number);
         mysqli_stmt_execute($stmt);
@@ -56,8 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             VALUES ('$account_number', '$room_number', '$amount', '$description', '$startdate', '$duedate', '$status')";
             
             if (mysqli_query($conn, $insert_query)) {
-                header("Location: " . $_SERVER['PHP_SELF']);
-                exit();
+                $msg = "Transaction added.";
             } else {
                 echo "Error: " . mysqli_error($conn);
             }
@@ -175,7 +174,16 @@ if (isset($_GET['room_number'])) {
             color: #fff;
         }
 
-
+        .message{
+            width: 100%;
+            background-color: #fff;
+            background: rgb(170, 254, 2);
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 3px;
+            color: black;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -207,6 +215,9 @@ if (isset($_GET['room_number'])) {
     </div>
     <div class="container">
         <center><h2>Add Transaction</h2></center>
+        <?php if (!empty($msg)) : ?>
+            <p class="message"><?php echo $msg; ?></p>
+        <?php endif; ?>
         <form action="" method="POST">
             <div class="form-group">
                 <label for="roomnumber">Select Room:</label>
