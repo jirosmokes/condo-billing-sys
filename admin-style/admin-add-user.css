@@ -1,0 +1,116 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+    background-color: rgb(24, 25, 26);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    width: 450px;
+    margin: 20px;
+    padding: 20px;
+    background-color: rgb(39, 40, 41);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.container h2 {
+    margin-bottom: 20px;
+    font-size: 30px;
+    color: white;
+}
+
+.container form {
+    margin-top: 20px;
+}
+
+.container form .form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.container form .name-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+.container form input[type="text"],
+.container form input[type="password"],
+.container form input[type="tel"],
+.container form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.container form button[type="submit"] {
+    width: 100%;
+    height: 50px;
+    background-color: rgb(170, 254, 2);
+    color: rgb(24, 25, 26);
+    font-size: 20px;
+    font-weight: 500;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.container form button[type="submit"]:hover {
+    background-color: rgb(187, 249, 64);
+}
+
+.container hr {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 0;
+    border-top: 1px solid #ccc;
+}
+
+.container a {
+    text-decoration: none;
+    color: rgb(170, 254, 2);
+    font-size: 20px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.fa-solid {
+    font-size: 24px;
+}
+
+.message {    
+    width: 100%;
+    background-color: #fff;
+    background: rgb(170, 254, 2);
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 3px;
+    color: black;
+}
+.error {
+    width: 100%;
+    background-color: #fff;
+    background: red;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 3px;
+    color: rgb(255, 255, 255);
+}
