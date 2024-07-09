@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
         $message = "Record deleted successfully";
         // Refresh the rooms list after deletion
         $rooms = [];
-        $sql = "SELECT room_number FROM users WHERE status = 'user'";
+        $sql = "SELECT room_number FROM users WHERE access_lvl = 'user'";
         $result = $conn->query($sql);
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {

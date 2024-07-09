@@ -355,14 +355,14 @@ $conn->close();
         </form>
     </div>
 
-    <div class="container">
-        <h2>Transaction History</h2>
-        <?php if (!empty($message)) : ?>
+    <?php if (!empty($message)) : ?>
             <p class="message"><?php echo $message; ?></p>
         <?php endif; ?>
         <?php if (!empty($error)) : ?>
             <p class="error"><?php echo $error; ?></p>
         <?php endif; ?>
+    <div class="container">
+        <h2>Transaction History</h2>
         <table>
             <tr>
                 <th>ID</th>
@@ -436,7 +436,7 @@ $conn->close();
                                 <option value="USA">USA</option>
                                 <option value="Canada">Canada</option>
                                 <option value="UK">UK</option>
-                                <option value="PHILIPPINES">PHILIPPINES</option>
+                                <option value="PHILIPPINES">Philippines</option>
                             </select>
                         </div>
                     </div>
