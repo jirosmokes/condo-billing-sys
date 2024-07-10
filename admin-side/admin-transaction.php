@@ -94,9 +94,10 @@ if (isset($_GET['room_number'])) {
             background-color: rgb(24, 25, 26);
             color: #fff;
             display: flex;
-            justify-content: right;
+            justify-content: center;
             align-items: center;
             margin: 0;
+            min-height: 100vh;
         }
 
         .container {
@@ -107,7 +108,8 @@ if (isset($_GET['room_number'])) {
             width: 100%;
             max-width: 600px;
             margin-top: 20px;
-            margin-right: 350px;
+            margin-left: 200px;
+
         }
 
         h2 {
