@@ -1,7 +1,7 @@
 body {
-    background-color: #111;
+    background-color: rgb(24, 25, 26);
     color: #fff;
-    font-family: Arial, sans-serif;
+    font-family: 'roboto';
 }
 
 .container {
@@ -26,6 +26,7 @@ body {
     flex-direction: column; /* Arrange items in a column */
     width: auto; /* Adjust the width as needed */
     margin: 20px 0; /* Add vertical margin */
+    
 }
 
 .question h2 {
@@ -37,6 +38,7 @@ body {
     width: 400px;
      box-sizing: border-box;
     align-self: flex-end; /* Align the h2 element to the right */
+    box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.2);
 }
 
 .question p {

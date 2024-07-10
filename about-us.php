@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us</title>
-    <link rel="stylesheet" href="about-us-old.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link rel="stylesheet" href="about-us.css">
 </head>
 <body>
     <div class="container">
         <!-- Make the logo clickable and link it to landing-page.php -->
-        <a href="condo-billing-sys/landing-page.php">
+        <a href="landing-page.php">
             <img src="images/dorm-hub-logo-official.png" alt="Dormhub Logo" class="logo">
         </a>
         
