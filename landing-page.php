@@ -71,11 +71,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     <header>
         <img src="images/dorm-hub-logo-official.png" alt="DormHub Logo" class="logo">
         <nav>
-            <a href="about.php">About</a>
+            <a href="about-us.php">About</a>
             <a href="rooms.php">Rooms</a>
         </nav>
         <div class="help-center">
-            <a href="help-center.php">Help Center</a>
+        <a href="help-center.php" style="color:black; text-decoration:none;">Help Center</a>
         </div>
     </header>
     <main>
