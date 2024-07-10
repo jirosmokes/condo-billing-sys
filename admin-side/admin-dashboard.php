@@ -27,7 +27,7 @@ if (empty($_SESSION['account_number'])) {
         body {
             margin: 0;
             font-family: "Open Sans", sans-serif;
-            background-color: #1e1e1e;
+            background-color: rgb(24, 25, 26);
         }
     </style>
 </head>

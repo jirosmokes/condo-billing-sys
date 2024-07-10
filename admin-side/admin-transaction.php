@@ -97,6 +97,7 @@ if (isset($_GET['room_number'])) {
             justify-content: right;
             align-items: center;
             margin: 0;
+            min-height: 100vh;
         }
 
         .container {
@@ -107,7 +108,8 @@ if (isset($_GET['room_number'])) {
             width: 100%;
             max-width: 600px;
             margin-top: 20px;
-            margin-right: 350px;
+            margin-left: 200px;
+
         }
 
         h2 {

@@ -6,6 +6,7 @@
     <title>About Us</title>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
     <link rel="stylesheet" href="about-us.css">
+    <link rel="icon" href="images/dorm-hub-logo-official-2.png" type="image/png">
 </head>
 <body>
     <div class="container">

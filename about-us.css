@@ -27,18 +27,35 @@ body {
     width: auto; /* Adjust the width as needed */
     margin: 20px 0; /* Add vertical margin */
     
+    
 }
 
-.question h2 {
+/*question h2 {
     display: flex;
     background-color: #333;
-    padding: 15px; /* Adjust padding as needed */
+    padding: 15px; /* Adjust padding as needed
     border-radius: 50px;
     font-size: 24px;
     width: 400px;
-     box-sizing: border-box;
+    box-sizing: border-box;
+    align-self: flex-end; /* Align the h2 element to the right 
+    box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    
+}*/
+.question h2 {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    background-color: #333;
+    padding: 12.5px 0px 12.5px 0px;
+    border-radius: 50px;
+    font-size: 24px;
+    width: 300px;
+    box-sizing: border-box;
     align-self: flex-end; /* Align the h2 element to the right */
     box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.2);
+    text-align: center; /* Center the text horizontally within the h2 */
 }
 
 .question p {

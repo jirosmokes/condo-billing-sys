@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
             <a href="rooms.php">Rooms</a>
         </nav>
         <div class="help-center">
-            <a href="help-center.php">Help Center</a>
+        <a href="help-center.php" style="color:black; text-decoration:none;">Help Center</a>
         </div>
     </header>
     <main>
