@@ -45,7 +45,8 @@ nav a {
 }
 
 .help-center {
-	background-color: rgb(187, 249, 64);
+	background-color: #AAFE02; 
+	color: #000;
 	border: none;
 	padding: 0.5vw 1vw;
 	cursor: pointer;

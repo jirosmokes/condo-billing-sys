@@ -191,7 +191,7 @@ $conn->close();
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             text-align: left;
-            justify-content: right;
+            margin-left: 100px;
         }
 
         .bill-container h2 {

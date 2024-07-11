@@ -1,0 +1,66 @@
+body {
+    background-color: rgb(24, 25, 26);
+    color: #fff;
+    font-family: 'roboto';
+}
+
+.container {
+    padding: 20px 60px 20px 60px;
+    display: flex;
+    flex-direction: column; /* Arrange items in a column */
+}
+
+.logo {
+    width: 150px;
+}
+
+.icon {
+    width: 50px;
+    height: 50px;
+    vertical-align: middle; /* Align icon with the text */
+    margin-right: 8px; /* Add more space between the icon and the text */
+}
+
+.question {
+    display: flex;
+    flex-direction: column; /* Arrange items in a column */
+    width: auto; /* Adjust the width as needed */
+    margin: 20px 0; /* Add vertical margin */
+    
+    
+}
+
+/*question h2 {
+    display: flex;
+    background-color: #333;
+    padding: 15px; /* Adjust padding as needed
+    border-radius: 50px;
+    font-size: 24px;
+    width: 400px;
+    box-sizing: border-box;
+    align-self: flex-end; /* Align the h2 element to the right 
+    box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    
+}*/
+.question h2 {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    background-color: #333;
+    padding: 12.5px 0px 12.5px 0px;
+    border-radius: 50px;
+    font-size: 24px;
+    width: 300px;
+    box-sizing: border-box;
+    align-self: flex-end; /* Align the h2 element to the right */
+    box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.2);
+    text-align: center; /* Center the text horizontally within the h2 */
+}
+
+.question p {
+    text-align: left;
+    font-size: 24px;
+    display: flex; /* Use flexbox for the p element to align items */
+    align-items: start; /* Vertically center the text with the icon */
+}
