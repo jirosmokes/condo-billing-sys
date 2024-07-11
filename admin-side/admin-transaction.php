@@ -94,7 +94,7 @@ if (isset($_GET['room_number'])) {
             background-color: rgb(24, 25, 26);
             color: #fff;
             display: flex;
-            justify-content: right;
+            justify-content: center;
             align-items: center;
             margin: 0;
             min-height: 100vh;

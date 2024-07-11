@@ -1,23 +1,24 @@
 body {
-	background-color: rgb(24, 25, 26);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
-	margin: 0;
+    background-color: rgb(24, 25, 26);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
     font-family:'roboto';
 }
 
 .card {
-	background-color: #333;
-	color: #fff;
-	width: 1000px;
-	padding: 45px;
-	border-radius: 10px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
+    background-color: #333;
+    color: #fff;
+    width: 1000px;
+    padding: 45px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+	margin-left: 200px;
 }
 
 .header {
@@ -82,9 +83,9 @@ body {
 }
 
 .info .left, .info .right {
-	display: inline-block;
-	vertical-align: top;
-	width: 48%;
+    display: inline-block;
+    vertical-align: top;
+    width: 48%;
 }
 
 .info .left {
@@ -103,17 +104,17 @@ body {
 }
 
 .table-container th, .table-container td {
-	border: 1px solid #555;
-	padding: 10px;
-	text-align: center;
+    border: 1px solid #555;
+    padding: 10px;
+    text-align: center;
 }
 
 .table-container th {
-	background-color: #444;
-	color: #fff;
-	position: sticky;
-	top: 0;
-	z-index: 1;
+    background-color: #444;
+    color: #fff; 
+    position: sticky;
+    top: 0; 
+    z-index: 1; 
 
 }
 

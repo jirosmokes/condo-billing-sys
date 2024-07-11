@@ -18,6 +18,7 @@
             align-items: center;
             min-height: 100vh;
             font-weight:bold;
+            overflow: hidden; /* Hide scrollbars */
         }
         .container {
             background-color: #AAFE02; 

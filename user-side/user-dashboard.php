@@ -24,7 +24,7 @@
 
 <body>
     <div class="sidebar">
-        <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
+        <header><a href="../user-side/user-dashboard.php "><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></a></s></header>
         <a href="../user-side/user-dashboard.php " onclick="showContent('profile')">
             <i class="fas fa-user-alt"></i>
             <span>Profile</span>

@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profilePicture'])) {
     $uploadMessage = upload_image($account_number, $conn);
     echo "<script>alert('$uploadMessage');</script>";
     header("Refresh:0");
-    exit; 
+    exit;
 }
 
 
@@ -71,14 +71,15 @@ if ($payment_transaction_result->num_rows > 0) {
 $stmt->close();
 $conn->close();
 
-function upload_image($account_number, $conn) {
+function upload_image($account_number, $conn)
+{
     if (isset($_FILES["profilePicture"]) && $_FILES["profilePicture"]["error"] == 0) {
         $profile_picture = $_FILES["profilePicture"];
         $target_dir = "../images/";
         $target_file = $target_dir . basename($profile_picture["name"]);
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-        
+
         // Check if file is an actual image
         $check = getimagesize($profile_picture["tmp_name"]);
         if ($check === false) {
@@ -90,13 +91,13 @@ function upload_image($account_number, $conn) {
             return "Sorry, your file is too large.";
         }
 
-       
+
         $allowedFormats = ["jpg", "jpeg", "png", "gif"];
         if (!in_array($imageFileType, $allowedFormats)) {
             return "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
         }
 
-        
+
         if (file_exists($target_file)) {
             return "Sorry, file already exists.";
         }
@@ -125,6 +126,7 @@ function upload_image($account_number, $conn) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -135,11 +137,12 @@ function upload_image($account_number, $conn) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Profile View</title>
 </head>
+
 <body>
-<div class="sidebar">
+    <div class="sidebar">
         <header><img src="../images/dorm-hub-logo-official.png" alt="" height="30px"></header>
 
-       
+
 
         <a href="../user-side/user-view-profile.php " onclick="showContent('profile')">
             <i class="fas fa-user-alt"></i>
@@ -147,7 +150,7 @@ function upload_image($account_number, $conn) {
         </a>
 
         <a href="../user-side/user-billing-information.php" onclick="showContent('bills')">
-          <i class="fa-solid fa-money-bills"></i>
+            <i class="fa-solid fa-money-bills"></i>
             <span>Bills</span>
         </a>
         <form method="post" action="../logout.php">
@@ -170,7 +173,7 @@ function upload_image($account_number, $conn) {
                 <div class="left">
                     <div>Email: <?php echo htmlspecialchars($user['account_number']); ?></div>
                     <div>Contact No.: <?php echo htmlspecialchars($user['contact_number']); ?></div>
-                
+
                     <div>School: <?php echo htmlspecialchars($user['school']); ?></div>
                     <div>Room No.: <?php echo htmlspecialchars($user['room_number']); ?></div>
                     <div>Emergency No.: <?php echo htmlspecialchars($user['emergency_number']); ?></div>
@@ -189,18 +192,18 @@ function upload_image($account_number, $conn) {
                     </tr>
                 </thead>
                 <tbody>
-                <?php
-                $counter = 1; // Initialize counter
-                foreach ($billing_logs as $log) {
-                    echo '<tr>';
-                    echo '<td style="width: 30px; text-align: center; padding: 5px;">' . $counter . '</td>'; // Display the counter with styling
-                    foreach ($log as $item) {
-                        echo '<td>' . htmlspecialchars($item) . '</td>';
+                    <?php
+                    $counter = 1; // Initialize counter
+                    foreach ($billing_logs as $log) {
+                        echo '<tr>';
+                        echo '<td style="width: 30px; text-align: center; padding: 5px;">' . $counter . '</td>'; // Display the counter with styling
+                        foreach ($log as $item) {
+                            echo '<td>' . htmlspecialchars($item) . '</td>';
+                        }
+                        echo '</tr>';
+                        $counter++; // Increment counter
                     }
-                    echo '</tr>';
-                    $counter++; // Increment counter
-                }
-            ?>
+                    ?>
                 </tbody>
             </table>
         </div>
@@ -216,22 +219,22 @@ function upload_image($account_number, $conn) {
                     </tr>
                 </thead>
                 <tbody>
-                <?php
-                $counter = 1; // Initialize counter
-                foreach ($payment_transactions as $transaction) {
-                    echo '<tr>';
-                    echo '<td style="width: 30px; text-align: center; padding: 5px;">' . $counter . '</td>'; 
-                    foreach ($transaction as $item) {
-                        echo '<td style="text-align:center;">' . htmlspecialchars($item) . '</td>';
+                    <?php
+                    $counter = 1; // Initialize counter
+                    foreach ($payment_transactions as $transaction) {
+                        echo '<tr>';
+                        echo '<td style="width: 30px; text-align: center; padding: 5px;">' . $counter . '</td>';
+                        foreach ($transaction as $item) {
+                            echo '<td style="text-align:center;">' . htmlspecialchars($item) . '</td>';
+                        }
+                        echo '</tr>';
+                        $counter++; // Increment counter
                     }
-                    echo '</tr>';
-                    $counter++; // Increment counter
-                }
-                ?>
+                    ?>
                 </tbody>
             </table>
         </div>
     </div>
 </body>
-</html>
 
+</html>

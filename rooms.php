@@ -48,7 +48,6 @@ function displayRoomStatus($conn, $room_number)
             position: relative;
             width: 1000px;
             margin: 50px 20px;
-            margin-right: 50px;
             /* margin-top: 100px;
 	margin-bottom: 100px; */
             /* max-width: 500px; */
